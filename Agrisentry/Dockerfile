@@ -4,12 +4,16 @@ FROM php:8.3-apache
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
+    pkg-config \
+    libonig-dev \
     libzip-dev \
     libpng-dev \
-    libjpeg-dev \
+    libjpeg62-turbo-dev \
     libfreetype6-dev \
     libpq-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure gd \
+        --with-freetype \
+        --with-jpeg \
     && docker-php-ext-install \
         pdo \
         pdo_mysql \
@@ -30,26 +34,25 @@ WORKDIR /var/www/html
 # Copy Laravel application
 COPY . .
 
-# Install PHP dependencies
+# Install Laravel dependencies
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
     --no-interaction
 
-# Laravel public directory
-RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' \
-    /etc/apache2/sites-available/000-default.conf
+# Point Apache to Laravel public directory
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
-RUN sed -i 's#<Directory /var/www/>#<Directory /var/www/html/public/>#' \
-    /etc/apache2/apache2.conf
+RUN sed -ri \
+    -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
+    /etc/apache2/sites-available/*.conf \
+    /etc/apache2/apache2.conf \
+    /etc/apache2/conf-available/*.conf
 
-# Permissions
+# Laravel permissions
 RUN chown -R www-data:www-data \
     /var/www/html/storage \
     /var/www/html/bootstrap/cache
-
-# Laravel storage link
-RUN php artisan storage:link || true
 
 EXPOSE 80
 
