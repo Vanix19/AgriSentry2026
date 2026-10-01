@@ -1,0 +1,14 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "farms": {
+      "$farm": {
+        "telemetry": {
+          ".read": "auth != null && root.child('access').child(auth.uid).child($farm).child('expires_at').val() > now",
+          ".write": false
+        }
+      }
+    }
+  }
+}

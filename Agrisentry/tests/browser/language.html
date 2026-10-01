@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Language regression checks</title>
+<script>localStorage.setItem('agrisentry-language','fil'); window.confirm = message => { window.confirmationMessage = message; return true; };</script>
+<script src="../../public/js/system-translations.js"></script>
+<script src="../../public/js/dashboard-language.js"></script>
+</head><body>
+<h1 id="heading">Medical Records</h1><button id="save">Save changes</button>
+<form id="form"><select name="sex" id="sex"><option>Female</option><option>Male</option></select>
+<select name="pregnancy_status"><option value="pregnant">Pregnant</option></select>
+<input name="name" id="name" value="Normal" placeholder="Owner name" aria-label="Name">
+<input id="required" required></form>
+<span class="goat-name">Normal</span><span translate="no">Warning</span>
+<div id="dynamic"></div><div id="counter">Showing 2 of 3 animals</div>
+<pre id="result" translate="no">PENDING</pre>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    let checks=0;
+    const assert=(condition,message)=>{if(!condition)throw new Error(message);checks++;};
+    const settle=()=>new Promise(resolve=>setTimeout(resolve,0));
+    try {
+        assert(document.documentElement.lang==='fil','Saved language restored');
+        assert(document.getElementById('heading').textContent==='Mga medikal na tala','Static page text');
+        assert(document.getElementById('save').textContent==='I-save ang mga pagbabago','Buttons');
+        assert(document.getElementById('name').placeholder==='Pangalan ng may-ari','Placeholders');
+        assert(document.getElementById('name').getAttribute('aria-label')==='Pangalan','Accessibility labels');
+        assert(new FormData(document.getElementById('form')).get('sex')==='Female','Implicit option value preserved');
+        assert(new FormData(document.getElementById('form')).get('pregnancy_status')==='pregnant','Explicit option value preserved');
+        assert(document.getElementById('name').value==='Normal','User input preserved');
+        assert(document.querySelector('.goat-name').textContent==='Normal','Animal name preserved');
+        assert(document.querySelector('[translate="no"]').textContent==='Warning','Protected text preserved');
+        assert(document.getElementById('counter').textContent==='Ipinapakita ang 2 sa 3 hayop','Dynamic counters');
+        const liveLabel = document.createElement('div'); document.body.append(liveLabel);
+        document.addEventListener('agrisentry:language', () => { liveLabel.textContent='Motion readings'; });
+        document.getElementById('dynamic').innerHTML='<button>Save Record</button><select><option>Treatment</option></select>';
+        await settle();
+        assert(document.querySelector('#dynamic button').textContent==='I-save ang tala','Async content translation');
+        assert(document.querySelector('#dynamic select').value==='Treatment','Async option values preserved');
+        document.querySelector('#dynamic button').textContent='Delete'; await settle();
+        assert(document.querySelector('#dynamic button').textContent==='Burahin','Updated text translation');
+        confirm("Delete Luna? This also removes their health logs, medical records, and alerts. This cannot be undone.");
+        assert(window.confirmationMessage.startsWith('Burahin si Luna?'),'Confirm dialog language and name');
+        document.getElementById('required').checkValidity();
+        assert(document.getElementById('required').validationMessage==='Mangyaring punan ang patlang na ito.','Native form validation');
+        assert(dashboardText('Urgent Low — Skin reading 24.3°C: Inspect the goat immediately and contact a veterinarian promptly.').includes('Suriin agad ang kambing'),'Sensor advisory language');
+        changeDashboardLanguage('ceb');
+        assert(document.getElementById('heading').textContent==='Mga medikal nga rekord','Switch to Cebuano');
+        assert(liveLabel.textContent==='Mga sukod sa lihok','Labels rebuilt by chart listeners');
+        changeDashboardLanguage('es');
+        assert(document.getElementById('save').textContent==='Guardar cambios','Switch to Spanish');
+        changeDashboardLanguage('en');
+        assert(document.getElementById('heading').textContent==='Medical Records','Restore English source');
+        assert(document.getElementById('name').placeholder==='Owner name','Restore attributes');
+        assert(document.querySelector('#dynamic button').textContent==='Delete','Restore latest dynamic text');
+        changeDashboardLanguage('fil');
+        assert(localStorage.getItem('agrisentry-language')==='fil','Preference persisted');
+        assert(document.querySelector('#system-language').value==='fil','Selector reflects preference');
+        document.getElementById('result').textContent='PASS: '+checks+' browser assertions';
+    } catch(error) { document.getElementById('result').textContent='FAIL: '+error.message; }
+});
+</script></body></html>
