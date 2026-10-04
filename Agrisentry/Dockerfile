@@ -44,11 +44,8 @@ RUN composer install \
 
 RUN npm install && npm run build
 
-# Configure Apache for Laravel
 RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 <VirtualHost *:10000>
-
-    ServerName agrisentry2026.onrender.com
 
     DocumentRoot /var/www/html/public
 
@@ -57,12 +54,6 @@ RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
         AllowOverride All
         Require all granted
     </Directory>
-
-    RewriteEngine On
-    RewriteCond %{REQUEST_URI} !^/index\.php
-    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
-    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
-    RewriteRule ^/(.*)$ /index.php [L]
 
     DirectoryIndex index.php
 
