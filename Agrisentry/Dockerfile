@@ -29,6 +29,9 @@ RUN docker-php-ext-configure gd \
         zip \
         opcache
 
+# Enable Apache rewrite module
+RUN a2enmod rewrite
+
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
@@ -42,19 +45,26 @@ RUN composer install \
 
 RUN npm install && npm run build
 
-# Laravel public directory
+# Configure Apache for Laravel
 RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 <VirtualHost *:10000>
+
+    ServerName agrisentry2026.onrender.com
 
     DocumentRoot /var/www/html/public
 
     <Directory /var/www/html/public>
         Options FollowSymLinks
-        AllowOverride None
+        AllowOverride All
         Require all granted
-
-        FallbackResource /index.php
     </Directory>
+
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_URI} !^/index\.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ /index.php [L]
 
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
