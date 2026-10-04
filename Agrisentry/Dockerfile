@@ -42,35 +42,39 @@ RUN composer install \
     --optimize-autoloader \
     --no-interaction
 
-RUN npm install \
-    && npm run build
+RUN npm install && npm run build
 
+# Laravel must use /public as Apache document root
 RUN sed -i \
     's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' \
     /etc/apache2/sites-available/000-default.conf
 
+# Explicit Laravel Apache configuration
 RUN printf '%s\n' \
-    '<Directory /var/www/html/public>' \
-    '    Options Indexes FollowSymLinks' \
-    '    AllowOverride All' \
-    '    Require all granted' \
-    '</Directory>' \
-    > /etc/apache2/conf-available/laravel.conf
-
-RUN a2enconf laravel
+    '<VirtualHost *:10000>' \
+    '    DocumentRoot /var/www/html/public' \
+    '    <Directory /var/www/html/public>' \
+    '        Options Indexes FollowSymLinks' \
+    '        AllowOverride All' \
+    '        Require all granted' \
+    '    </Directory>' \
+    '    RewriteEngine On' \
+    '    RewriteCond %{REQUEST_FILENAME} !-f' \
+    '    RewriteCond %{REQUEST_FILENAME} !-d' \
+    '    RewriteRule ^ /index.php [L]' \
+    '</VirtualHost>' \
+    > /etc/apache2/sites-available/000-default.conf
 
 RUN chown -R www-data:www-data \
-        /var/www/html/storage \
-        /var/www/html/bootstrap/cache \
-    && chmod -R 775 \
-        /var/www/html/storage \
-        /var/www/html/bootstrap/cache
+    /var/www/html/storage \
+    /var/www/html/bootstrap/cache
+
+RUN chmod -R 775 \
+    /var/www/html/storage \
+    /var/www/html/bootstrap/cache
 
 RUN sed -i 's/Listen 80/Listen 10000/' \
     /etc/apache2/ports.conf
-
-RUN sed -i 's/:80>/:10000>/' \
-    /etc/apache2/sites-available/000-default.conf
 
 EXPOSE 10000
 
