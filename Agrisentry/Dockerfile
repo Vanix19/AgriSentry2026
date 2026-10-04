@@ -42,28 +42,32 @@ RUN composer install \
     --optimize-autoloader \
     --no-interaction
 
-RUN npm install && npm run build
+RUN npm install \
+    && npm run build
 
-# Laravel must use /public as Apache document root
-RUN sed -i \
-    's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' \
-    /etc/apache2/sites-available/000-default.conf
+# Laravel public directory
+RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
+<VirtualHost *:10000>
 
-# Explicit Laravel Apache configuration
-RUN printf '%s\n' \
-    '<VirtualHost *:10000>' \
-    '    DocumentRoot /var/www/html/public' \
-    '    <Directory /var/www/html/public>' \
-    '        Options Indexes FollowSymLinks' \
-    '        AllowOverride All' \
-    '        Require all granted' \
-    '    </Directory>' \
-    '    RewriteEngine On' \
-    '    RewriteCond %{REQUEST_FILENAME} !-f' \
-    '    RewriteCond %{REQUEST_FILENAME} !-d' \
-    '    RewriteRule ^ /index.php [L]' \
-    '</VirtualHost>' \
-    > /etc/apache2/sites-available/000-default.conf
+    DocumentRoot /var/www/html/public
+
+    <Directory /var/www/html/public>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ /index.php [L]
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+EOF
 
 RUN chown -R www-data:www-data \
     /var/www/html/storage \
