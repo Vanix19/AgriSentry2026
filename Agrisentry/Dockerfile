@@ -1,4 +1,3 @@
-
 FROM php:8.4-apache
 
 # --------------------------------------------------
@@ -37,7 +36,7 @@ RUN docker-php-ext-configure gd \
         opcache
 
 # --------------------------------------------------
-# Enable Apache URL rewriting
+# Enable Apache rewrite
 # --------------------------------------------------
 RUN a2enmod rewrite
 
@@ -52,12 +51,12 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # --------------------------------------------------
-# Copy the Laravel project
+# Copy Laravel application
 # --------------------------------------------------
 COPY . /var/www/html/
 
 # --------------------------------------------------
-# Install Laravel PHP dependencies
+# Install Laravel dependencies
 # --------------------------------------------------
 RUN composer install \
     --no-dev \
@@ -65,27 +64,30 @@ RUN composer install \
     --no-interaction
 
 # --------------------------------------------------
-# Install frontend dependencies and build assets
+# Install frontend dependencies
 # --------------------------------------------------
 RUN npm install \
     && npm run build
 
 # --------------------------------------------------
-# Configure Apache to serve Laravel's public folder
+# Laravel public directory
 # --------------------------------------------------
 RUN sed -i \
     's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' \
     /etc/apache2/sites-available/000-default.conf
 
-RUN sed -i \
-    's#<Directory /var/www/>#<Directory /var/www/html/public/>#' \
-    /etc/apache2/apache2.conf
+# --------------------------------------------------
+# Explicit Apache configuration for Laravel
+# --------------------------------------------------
+RUN printf '%s\n' \
+    '<Directory /var/www/html/public>' \
+    '    Options Indexes FollowSymLinks' \
+    '    AllowOverride All' \
+    '    Require all granted' \
+    '</Directory>' \
+    > /etc/apache2/conf-available/laravel.conf
 
-RUN sed -i \
-    '/<Directory \/var\/www\/html\/public\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' \
-    /etc/apache2/apache2.conf
-
-RUN a2enmod rewrite
+RUN a2enconf laravel
 
 # --------------------------------------------------
 # Laravel storage permissions
@@ -98,7 +100,7 @@ RUN chown -R www-data:www-data \
         /var/www/html/bootstrap/cache
 
 # --------------------------------------------------
-# Render uses port 10000
+# Render port
 # --------------------------------------------------
 RUN sed -i 's/Listen 80/Listen 10000/' \
     /etc/apache2/ports.conf
