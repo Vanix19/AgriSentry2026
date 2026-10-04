@@ -80,10 +80,12 @@ RUN sed -i \
 RUN sed -i \
     's#<Directory /var/www/>#<Directory /var/www/html/public/>#' \
     /etc/apache2/apache2.conf
-    
+
 RUN sed -i \
     '/<Directory \/var\/www\/html\/public\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' \
     /etc/apache2/apache2.conf
+
+RUN a2enmod rewrite
 
 # --------------------------------------------------
 # Laravel storage permissions
