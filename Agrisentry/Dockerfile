@@ -1,5 +1,6 @@
 FROM php:8.4-apache
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -15,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     npm \
     && rm -rf /var/lib/apt/lists/*
 
+# Install PHP extensions required by Laravel
 RUN docker-php-ext-configure gd \
         --with-freetype \
         --with-jpeg \
@@ -29,23 +31,32 @@ RUN docker-php-ext-configure gd \
         zip \
         opcache
 
+# Enable Apache rewrite module
 RUN a2enmod rewrite
 
+# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Laravel application directory
 WORKDIR /var/www/html
 
+# Copy Laravel project
 COPY . /var/www/html/
 
+# Install PHP dependencies
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
     --no-interaction
 
-RUN npm install && npm run build
+# Install and build frontend assets
+RUN npm install \
+    && npm run build
 
+# Configure Apache to use Laravel's public directory
 RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 <VirtualHost *:10000>
+
     ServerName agrisentry2026.onrender.com
 
     DocumentRoot /var/www/html/public
@@ -56,16 +67,13 @@ RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
         Require all granted
     </Directory>
 
-    RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^ /index.php [L]
-
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
+
 </VirtualHost>
 EOF
 
+# Set Laravel storage permissions
 RUN chown -R www-data:www-data \
     /var/www/html/storage \
     /var/www/html/bootstrap/cache
@@ -74,6 +82,7 @@ RUN chmod -R 775 \
     /var/www/html/storage \
     /var/www/html/bootstrap/cache
 
+# Render uses port 10000
 RUN sed -i 's/Listen 80/Listen 10000/' \
     /etc/apache2/ports.conf
 
