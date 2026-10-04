@@ -1,7 +1,11 @@
 # Render deployment
 
 Keep the Docker runtime and Apache. In Render use root directory `Agrisentry`,
+<<<<<<< Updated upstream
 Docker build context `.`, Dockerfile path `Dockerfile`, and no Docker
+=======
+Docker build context `.`, Dockerfile path `Dockerfile/Dockerfile`, and no Docker
+>>>>>>> Stashed changes
 command override (so the new startup script runs). Health check: `/up`.
 
 The local `.env` is deliberately excluded from the image. Set these in Render:

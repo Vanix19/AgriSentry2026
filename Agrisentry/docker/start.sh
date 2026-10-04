@@ -13,8 +13,15 @@ chown -R www-data:www-data storage bootstrap/cache
 chmod -R u+rwX,g+rwX storage bootstrap/cache
 
 # Preserve Apache; match Render's PORT when supplied.
+<<<<<<< Updated upstream
 port="${PORT:-10000}"
 case "$port" in ''|*[!0-9]*) echo 'PORT must be numeric.' >&2; exit 1 ;; esac
 sed -i -E "s/^Listen [0-9]+$/Listen ${port}/" /etc/apache2/ports.conf
 sed -i -E "s/<VirtualHost \*:[0-9]+>/<VirtualHost *:${port}>/" /etc/apache2/sites-available/000-default.conf
+=======
+port="${PORT:-80}"
+case "$port" in ''|*[!0-9]*) echo 'PORT must be numeric.' >&2; exit 1 ;; esac
+sed -i "s/^Listen 80$/Listen ${port}/" /etc/apache2/ports.conf
+sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${port}>/" /etc/apache2/sites-available/000-default.conf
+>>>>>>> Stashed changes
 exec apache2-foreground

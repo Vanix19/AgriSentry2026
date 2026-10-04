@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 .git
 .github
 
@@ -19,10 +20,26 @@ tests
 
 bootstrap/cache/*.php
 storage/app/private/**
+=======
+.env
+.env.*
+!.env.example
+vendor
+node_modules
+.git
+.codex
+.claude
+.vscode
+local-server
+*.sql
+*.sqlite
+*.sqlite3
+>>>>>>> Stashed changes
 *firebase-adminsdk*.json
 *service-account*.json
 **/*.pem
 **/*.key
+<<<<<<< Updated upstream
 *.sql
 *.sqlite
 *.sqlite3
@@ -32,4 +49,14 @@ local-server
 .codex
 .claude
 .vscode
+=======
+storage/logs/*
+storage/framework/cache/**
+storage/framework/sessions/*
+storage/framework/views/*
+storage/app/private/**
+bootstrap/cache/*.php
+public/hot
+ngrok.yml
+>>>>>>> Stashed changes
 firmware
