@@ -26,7 +26,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 ($request->is('login', 'login/*', 'password/*', 'api/password/*', 'api/mobile/login*') &&
                  !$exception instanceof \Illuminate\Validation\ValidationException &&
                  !$exception instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface)) {
-                \App\Support\DeploymentErrors::log('Backend request failed.', $exception, [
+                \App\Support\DeploymentErrors::log($request->is('login') && $request->isMethod('post')
+                    ? 'Login backend failure' : 'Backend request failed.', $exception, [
                     'path' => $request->path(), 'method' => $request->method(),
                 ]);
                 // Avoid Laravel's default exception dump exposing SQL bindings.

@@ -69,7 +69,7 @@ class RenderBackendTest extends TestCase
         $this->postJson('/login', ['username' => 'login', 'password' => 'secret'])->assertStatus(503);
         $this->post('/password/otp', ['username' => 'recovery', 'channel' => 'email'])->assertStatus(500);
         Log::shouldHaveReceived('error')->withArgs(function ($message, $context) {
-            return $message === 'Backend request failed.'
+            return $message === ($context['path'] === 'login' ? 'Login backend failure' : 'Backend request failed.')
                 && str_contains($context['message'], 'Connection refused')
                 && !str_contains(json_encode($context), 'sensitive-value');
         })->twice();
