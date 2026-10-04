@@ -29,8 +29,6 @@ RUN docker-php-ext-configure gd \
         zip \
         opcache
 
-RUN a2enmod rewrite
-
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
@@ -42,8 +40,7 @@ RUN composer install \
     --optimize-autoloader \
     --no-interaction
 
-RUN npm install \
-    && npm run build
+RUN npm install && npm run build
 
 # Laravel public directory
 RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
@@ -52,16 +49,12 @@ RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
     DocumentRoot /var/www/html/public
 
     <Directory /var/www/html/public>
-        Options Indexes FollowSymLinks
-        AllowOverride All
+        Options FollowSymLinks
+        AllowOverride None
         Require all granted
+
+        FallbackResource /index.php
     </Directory>
-
-    RewriteEngine On
-
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^ /index.php [L]
 
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
