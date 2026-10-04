@@ -1,6 +1,5 @@
 FROM php:8.4-apache
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -16,7 +15,6 @@ RUN apt-get update && apt-get install -y \
     npm \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions required by Laravel
 RUN docker-php-ext-configure gd \
         --with-freetype \
         --with-jpeg \
@@ -31,29 +29,21 @@ RUN docker-php-ext-configure gd \
         zip \
         opcache
 
-# Enable Apache rewrite module
 RUN a2enmod rewrite
 
-# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Laravel application directory
 WORKDIR /var/www/html
 
-# Copy Laravel project
 COPY . /var/www/html/
 
-# Install PHP dependencies
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
     --no-interaction
 
-# Install and build frontend assets
-RUN npm install \
-    && npm run build
+RUN npm install && npm run build
 
-# Configure Apache to use Laravel's public directory
 RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 <VirtualHost *:10000>
 
@@ -73,7 +63,6 @@ RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 </VirtualHost>
 EOF
 
-# Set Laravel storage permissions
 RUN chown -R www-data:www-data \
     /var/www/html/storage \
     /var/www/html/bootstrap/cache
@@ -82,7 +71,6 @@ RUN chmod -R 775 \
     /var/www/html/storage \
     /var/www/html/bootstrap/cache
 
-# Render uses port 10000
 RUN sed -i 's/Listen 80/Listen 10000/' \
     /etc/apache2/ports.conf
 
