@@ -2,7 +2,7 @@
 
 return [
     'enabled' => env('FIREBASE_ENABLED', false),
-    'queue_connection' => env('FIREBASE_QUEUE_CONNECTION', 'database'),
+    'queue_connection' => env('FIREBASE_QUEUE_CONNECTION', env('QUEUE_CONNECTION', 'sync')),
     'credentials' => env('FIREBASE_CREDENTIALS'),
     'farm_id' => env('FIREBASE_FARM_ID', 'agrisentry'),
     'client' => [

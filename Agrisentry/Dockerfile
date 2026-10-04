@@ -37,6 +37,13 @@ WORKDIR /var/www/html
 
 COPY . /var/www/html/
 
+RUN mkdir -p storage/framework/cache/data storage/framework/sessions \
+    storage/framework/views storage/logs bootstrap/cache
+
+ENV APP_ENV=production APP_DEBUG=false LOG_CHANNEL=stderr \
+    SESSION_DRIVER=file CACHE_STORE=file QUEUE_CONNECTION=sync \
+    DB_CONNECTION=mysql TRUSTED_PROXIES=*
+
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
@@ -76,4 +83,4 @@ RUN sed -i 's/Listen 80/Listen 10000/' \
 
 EXPOSE 10000
 
-CMD ["apache2-foreground"]
+CMD ["sh", "/var/www/html/docker/start.sh"]

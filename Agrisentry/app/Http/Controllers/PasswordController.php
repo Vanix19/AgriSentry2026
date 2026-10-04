@@ -23,6 +23,9 @@ class PasswordController extends Controller
         if ($user) {
             $code = (string) random_int(100000, 999999);
             $sent = app(\App\Services\OtpDelivery::class)->send($user, $data['channel'], $code, 'password reset');
+            if (!$sent) throw ValidationException::withMessages([
+                'channel' => 'Unable to send a code. Ask your Admin to check your registered contact and OTP delivery settings.',
+            ]);
             if ($sent) DB::table('password_otps')->updateOrInsert(['user_id' => $user->id], [
                 'reset_token_hash' => null, 'code_hash' => Hash::make($code), 'attempts' => 0, 'expires_at' => now()->addMinutes(10)]);
         }
@@ -69,7 +72,7 @@ class PasswordController extends Controller
             if (!$otp || !$otp->reset_token_hash || now()->greaterThanOrEqualTo($otp->expires_at) || !hash_equals($otp->reset_token_hash, hash('sha256', $data['reset_token']))) return false;
             $user->forceFill(['password' => $data['password'], 'password_change_required' => false, 'remember_token' => null])->save();
             $user->tokens()->delete();
-            DB::table('sessions')->where('user_id', $user->id)->delete();
+            if (config('session.driver') === 'database') DB::connection(config('session.connection'))->table(config('session.table', 'sessions'))->where('user_id', $user->id)->delete();
             DB::table('login_otps')->where('user_id', $user->id)->delete();
             DB::table('password_otps')->where('id', $otp->id)->delete();
             AccountAccess::record($user, 'Password reset', $request);
@@ -91,7 +94,7 @@ class PasswordController extends Controller
         $user->forceFill(['password' => $data['password'], 'password_change_required' => false, 'remember_token' => null])->save();
         DB::table('password_otps')->where('user_id', $user->id)->delete();
         $user->tokens()->delete();
-        DB::table('sessions')->where('user_id', $user->id)->delete();
+        if (config('session.driver') === 'database') DB::connection(config('session.connection'))->table(config('session.table', 'sessions'))->where('user_id', $user->id)->delete();
         if ($request->hasSession()) $request->session()->regenerate();
         AccountAccess::record($user, 'Password changed', $request);
         return $this->respond($request, 'Password changed. Sign in again on your other devices.');

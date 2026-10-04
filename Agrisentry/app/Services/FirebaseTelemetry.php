@@ -18,7 +18,10 @@ class FirebaseTelemetry
     private function credentials(): array
     {
         $path = config('firebase.credentials');
-        if (!$path || !is_readable($path)) throw new RuntimeException('Firebase service-account file is not configured.');
+        if (!$path || !is_file($path) || !is_readable($path)) {
+            \Illuminate\Support\Facades\Log::error('Firebase credentials missing or unreadable. Set FIREBASE_CREDENTIALS to the mounted Render secret file.');
+            throw new RuntimeException('Firebase service-account file is not configured or readable.');
+        }
         $key = json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
         if (empty($key['private_key']) || empty($key['client_email']) || ($key['project_id'] ?? null) !== config('firebase.client.projectId')) {
             throw new RuntimeException('Firebase service-account project does not match the configured project.');

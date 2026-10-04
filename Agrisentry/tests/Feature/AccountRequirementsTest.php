@@ -15,6 +15,7 @@ class AccountRequirementsTest extends TestCase
 
     public function test_web_recovery_shows_one_step_at_a_time(): void
     {
+        $this->mock(\App\Services\OtpDelivery::class)->shouldReceive('send')->once()->andReturn(true);
         $user = User::factory()->create(['username' => 'recovery-user']);
         $this->get('/password/recovery')->assertOk()->assertSee('Send OTP')->assertDontSee('id="otp"', false);
         $this->from('/password/recovery')->post('/password/otp', ['username' => $user->username, 'channel' => 'email'])
@@ -23,7 +24,7 @@ class AccountRequirementsTest extends TestCase
         $this->from('/password/recovery')->post('/password/verify', ['username' => $user->username, 'otp' => '000000', 'password' => 'new-password', 'password_confirmation' => 'new-password'])
             ->assertSessionHasErrors('otp');
         $this->get('/password/recovery')->assertSee('id="otp"', false);
-        DB::table('password_otps')->insert(['user_id' => $user->id, 'code_hash' => Hash::make('123456'), 'expires_at' => now()->addMinutes(10)]);
+        DB::table('password_otps')->where('user_id', $user->id)->update(['code_hash' => Hash::make('123456'), 'expires_at' => now()->addMinutes(10)]);
         $this->post('/password/verify', ['username' => $user->username, 'otp' => '123456'])->assertRedirect('/password/recovery');
         $this->get('/password/recovery')->assertSee('Step 3 of 3')->assertDontSee('id="otp"', false)->assertSee('id="password"', false);
         $this->post('/password/reset', ['username' => $user->username, 'otp' => '123456', 'password' => 'new-password', 'password_confirmation' => 'new-password'])

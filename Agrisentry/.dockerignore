@@ -3,6 +3,7 @@
 
 .env
 .env.*
+!.env.example
 
 node_modules
 vendor
@@ -15,3 +16,20 @@ storage/framework/views/*
 tests
 
 .phpunit.result.cache
+
+bootstrap/cache/*.php
+storage/app/private/**
+*firebase-adminsdk*.json
+*service-account*.json
+**/*.pem
+**/*.key
+*.sql
+*.sqlite
+*.sqlite3
+public/hot
+ngrok.yml
+local-server
+.codex
+.claude
+.vscode
+firmware

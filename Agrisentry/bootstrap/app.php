@@ -12,8 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
     health: '/up',
 )
     ->withMiddleware(function (Middleware $middleware): void {
-        // ngrok forwards HTTPS requests through the local HTTP server.
-        $middleware->trustProxies(at: ['127.0.0.1', '::1']);
+        $middleware->trustProxies();
         $middleware->statefulApi();
         $middleware->redirectUsersTo('/species');
         $middleware->alias([
@@ -21,6 +20,19 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->report(function (\Throwable $exception) {
+            $request = request();
+            if ($exception instanceof \Illuminate\Database\QueryException ||
+                ($request->is('login', 'login/*', 'password/*', 'api/password/*', 'api/mobile/login*') &&
+                 !$exception instanceof \Illuminate\Validation\ValidationException &&
+                 !$exception instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface)) {
+                \App\Support\DeploymentErrors::log('Backend request failed.', $exception, [
+                    'path' => $request->path(), 'method' => $request->method(),
+                ]);
+                // Avoid Laravel's default exception dump exposing SQL bindings.
+                return false;
+            }
+        });
         $exceptions->render(function (\Illuminate\Database\QueryException $exception, \Illuminate\Http\Request $request) {
             if ($request->expectsJson() || $request->is('api/*')) {
                 return response()->json(['message' => 'The server is temporarily unavailable. Please wait a moment and try again.'], 503);
