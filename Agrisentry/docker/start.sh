@@ -11,6 +11,7 @@ php artisan route:clear
 php artisan view:clear
 php artisan config:cache
 
+echo 'Startup: fixing storage permissions'
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R u+rwX,g+rwX storage bootstrap/cache
 
@@ -26,4 +27,5 @@ esac
 sed -i -E "s/^Listen [0-9]+$/Listen ${port}/" /etc/apache2/ports.conf
 sed -i -E "s/<VirtualHost \*:[0-9]+>/<VirtualHost *:${port}>/" /etc/apache2/sites-available/000-default.conf
 
+echo "Startup: starting Apache on port ${port}"
 exec apache2-foreground
