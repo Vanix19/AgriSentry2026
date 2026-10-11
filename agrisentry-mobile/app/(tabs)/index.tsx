@@ -1,25 +1,11 @@
 import BatteryStatus from "@/components/BatteryStatus";
 import { useLiveRefresh } from "@/hooks/use-live-refresh";
 import DateFilter from "@/components/DateFilter";
+import LanguagePicker from "@/components/LanguagePicker";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import {
-  useWindowDimensions,
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  StatusBar,
-  Modal,
-  TextInput,
-  Alert as RNAlert,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-  RefreshControl,
-  Image,
-} from "react-native";
+import { useWindowDimensions, View, StyleSheet, ScrollView, TouchableOpacity, StatusBar, Modal, Alert as RNAlert, KeyboardAvoidingView, Platform, ActivityIndicator, RefreshControl, Image } from "react-native";
+import { Text, TextInput } from "@/components/i18n-text";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -724,6 +710,8 @@ export default function AgriSentryDashboard() {
                 </View>
               </TouchableOpacity>
             </View>
+
+            <LanguagePicker />
 
             <View style={styles.settingsCard}>
               <Text style={styles.cardTitle}>User &amp; role management</Text>

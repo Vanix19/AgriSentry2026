@@ -1,17 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-  Alert as RNAlert,
-  ActivityIndicator,
-  RefreshControl,
-  Image,
-} from "react-native";
+import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Alert as RNAlert, ActivityIndicator, RefreshControl, Image } from "react-native";
+import { Text, TextInput } from "@/components/i18n-text";
 import * as ImagePicker from "expo-image-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useRouter } from "expo-router";

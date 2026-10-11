@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Animated, Easing, Image, KeyboardAvoidingView, Platform, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, Animated, Easing, Image, KeyboardAvoidingView, Platform, ScrollView, StatusBar, StyleSheet, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { Text, TextInput } from "@/components/i18n-text";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "@/contexts/auth-context";
-import { apiFetch } from "@/services/api";
+import { apiFetch, wakeServer } from "@/services/api";
 
 function useBob(delay: number) {
   const value = useRef(new Animated.Value(0)).current;
@@ -38,6 +39,14 @@ function LoginForm({ roleLabel, compact }: { roleLabel?: string; compact?: boole
   const [challenge,setChallenge] = useState('');
   const [otp,setOtp] = useState('');
   const [message,setMessage] = useState('');
+  const [waking,setWaking] = useState(false);
+  useEffect(() => {
+    let active = true;
+    // Only mention the wake-up when it is actually slow.
+    const notice = setTimeout(() => { if (active) setWaking(true); }, 2500);
+    void wakeServer().finally(() => { active = false; clearTimeout(notice); setWaking(false); });
+    return () => { active = false; clearTimeout(notice); };
+  }, []);
   const handleLogin = async () => {
     if (submitting) return;
     if (!username.trim() || !password) { setError("Please enter your username and password."); return; }
@@ -70,6 +79,7 @@ function LoginForm({ roleLabel, compact }: { roleLabel?: string; compact?: boole
       <Image source={require("@/assets/images/agrisentry-logo-v2-transparent.png")} style={styles.formLogo} resizeMode="contain" />
       <Text style={styles.title}>Sign in to AgriSentry</Text>
       <View style={styles.accessLine}><View style={styles.line} /><Text style={styles.access}>{"Your role is identified automatically"}</Text><View style={styles.line} /></View>
+      {waking && <View accessibilityLiveRegion="polite" style={{flexDirection:'row',alignItems:'center',gap:10,backgroundColor:'#EFF6FF',borderRadius:10,padding:12,marginBottom:12}}><ActivityIndicator color="#2563EB" /><Text style={{color:'#1E40AF',flex:1}}>Waking up the server. This can take up to a minute on first use…</Text></View>}
       {error && <View style={styles.errorBox}><Text style={styles.errorText}>{error}</Text></View>}
       {!challenge ? <>
       <Text style={styles.label}>Username</Text>

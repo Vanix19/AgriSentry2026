@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Modal, View, Text, TouchableOpacity } from "react-native";
+import { Modal, View, TouchableOpacity } from "react-native";
+import { Text } from "@/components/i18n-text";
 import { useAppTheme } from "@/contexts/theme-context";
 
 export default function DateFilter({ value, onChange, label = "Specific date" }: { value: string; onChange: (date: string) => void; label?: string }) {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, TouchableOpacity, ScrollView } from 'react-native';
+import { Text } from '@/components/i18n-text';
 
 export default function BreedSelect({value,onChange}:{value:string;onChange:(value:string)=>void}) {
   const [open,setOpen]=useState(false);

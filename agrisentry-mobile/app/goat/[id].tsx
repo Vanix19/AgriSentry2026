@@ -4,23 +4,8 @@ import BatteryStatus from "@/components/BatteryStatus";
 import { useLiveRefresh } from "@/hooks/use-live-refresh";
 import DateFilter from "@/components/DateFilter";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-  Alert as RNAlert,
-  ActivityIndicator,
-  RefreshControl,
-  Linking,
-  Platform,
-  Animated,
-  Easing,
-  Image,
-} from "react-native";
+import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Alert as RNAlert, ActivityIndicator, RefreshControl, Linking, Platform, Animated, Easing, Image } from "react-native";
+import { Text, TextInput } from "@/components/i18n-text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import QRCode from "react-native-qrcode-svg";

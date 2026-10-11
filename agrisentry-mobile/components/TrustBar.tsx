@@ -1,5 +1,6 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
+import { Text } from "@/components/i18n-text";
 import { Ionicons } from "@expo/vector-icons";
 
 const ITEMS: { icon: keyof typeof Ionicons.glyphMap; label: string }[] = [

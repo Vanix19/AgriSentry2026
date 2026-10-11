@@ -1,5 +1,6 @@
 import React from "react";
-import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { Image, ScrollView, StatusBar, StyleSheet, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { Text } from "@/components/i18n-text";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";

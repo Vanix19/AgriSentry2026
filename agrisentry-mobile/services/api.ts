@@ -1,6 +1,6 @@
 import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
-import { API_URL } from "@/constants/config";
+import { API_URL, WEB_ORIGIN } from "@/constants/config";
 
 const TOKEN_KEY = "agrisentry_token";
 
@@ -62,10 +62,48 @@ export function setOnUnauthorized(handler: (() => void) | null) {
   onUnauthorized = handler;
 }
 
+// The hosted backend sleeps when idle and can take about a minute to wake up. Wait for its
+// health check once (with a long timeout) so ordinary requests keep their short timeouts.
+let serverAwake: Promise<boolean> | null = null;
+export function wakeServer(): Promise<boolean> {
+  if (!serverAwake) {
+    serverAwake = (async () => {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 75000);
+        try {
+          const response = await fetch(`${WEB_ORIGIN}/up`, { signal: controller.signal });
+          if (response.ok) return true;
+        } catch {} finally { clearTimeout(timer); }
+      }
+      serverAwake = null;
+      return false;
+    })();
+  }
+  return serverAwake;
+}
+
+const RETRYABLE_STATUS = [502, 503, 504];
+
 export async function apiFetch<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
+  await wakeServer();
+  const method = (options.method || "GET").toUpperCase();
+  // Reads are safe to repeat after a brief network or gateway failure; writes are not.
+  if (method !== "GET") return request<T>(path, options);
+  try {
+    return await request<T>(path, options);
+  } catch (error) {
+    const retryable = error instanceof ApiError && (error.status === 0 || RETRYABLE_STATUS.includes(error.status)) && !options.signal?.aborted;
+    if (!retryable) throw error;
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    return request<T>(path, options);
+  }
+}
+
+async function request<T>(path: string, options: RequestInit): Promise<T> {
   const token = await getToken();
 
   const isMultipart = typeof FormData !== "undefined" && options.body instanceof FormData;

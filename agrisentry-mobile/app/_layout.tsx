@@ -7,6 +7,7 @@ import 'react-native-reanimated';
 
 import { AuthProvider, useAuth } from '@/contexts/auth-context';
 import { AppThemeProvider, useAppTheme } from '@/contexts/theme-context';
+import { LanguageProvider } from '@/contexts/language-context';
 
 export const unstable_settings = {
   anchor: 'login',
@@ -77,8 +78,10 @@ function ThemedRoot() {
 
 export default function RootLayout() {
   return (
-    <AppThemeProvider>
-      <ThemedRoot />
-    </AppThemeProvider>
+    <LanguageProvider>
+      <AppThemeProvider>
+        <ThemedRoot />
+      </AppThemeProvider>
+    </LanguageProvider>
   );
 }

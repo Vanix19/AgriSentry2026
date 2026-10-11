@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import ProfileSettings from '@/components/ProfileSettings';
+import LanguagePicker from '@/components/LanguagePicker';
 import { useAppTheme } from '@/contexts/theme-context';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { ScrollView, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, TextInput } from '@/components/i18n-text';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/auth-context';
 import { apiFetch } from '@/services/api';
@@ -40,7 +42,7 @@ export default function AccountScreen() {
   return <SafeAreaView style={styles.safeArea}><ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
     <TouchableOpacity onPress={()=>router.replace(user?'/species':'/login')}><Text style={styles.link}>← {user?'Livestock selection':'Sign in'}</Text></TouchableOpacity>
     <Text style={styles.title}>{user ? 'Settings' : 'Recover your account'}</Text>
-    {user && <><Text style={styles.label}>Manage your profile and account security.</Text><View style={{flexDirection:"row",gap:10}}>{(["profile","security"] as const).map(tab=><TouchableOpacity key={tab} onPress={()=>setSection(tab)} style={[styles.button,{flex:1,opacity:section===tab?1:0.6}]}><Text style={styles.buttonText}>{tab==="profile"?"Personal information":"Password & security"}</Text></TouchableOpacity>)}</View>{section==="profile"&&<ProfileSettings />}</>}
+    {user && <><Text style={styles.label}>Manage your profile and account security.</Text><View style={{flexDirection:"row",gap:10}}>{(["profile","security"] as const).map(tab=><TouchableOpacity key={tab} onPress={()=>setSection(tab)} style={[styles.button,{flex:1,opacity:section===tab?1:0.6}]}><Text style={styles.buttonText}>{tab==="profile"?"Personal information":"Password & security"}</Text></TouchableOpacity>)}</View>{section==="profile"&&<><LanguagePicker /><ProfileSettings /></>}</>}
     {(!user||section==="security")&&<View style={styles.card}><Text style={styles.sectionTitle}>{user?'Password & security':'Password recovery'}</Text>
     {user?.password_change_required && <Text style={styles.label}>Your Admin provided your initial password. You can set your own password now.</Text>}
     {!user && recoveryStep==='request' && <>

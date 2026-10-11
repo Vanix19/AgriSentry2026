@@ -1,5 +1,6 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import { Text } from "@/components/i18n-text";
 import { useAppTheme } from "@/contexts/theme-context";
 
 const LIVE_WINDOW_MS = 10 * 60 * 1000;
