@@ -1,12 +1,7 @@
 import { Platform } from "react-native";
 
-// A local browser preview should use the local Laravel server even when the
-// native app's configured public tunnel is unavailable.
-const localPreview = Platform.OS === "web" && typeof window !== "undefined"
-  && ["localhost", "127.0.0.1"].includes(window.location.hostname);
-export const API_URL = localPreview
-  ? `http://${window.location.hostname}:3000/api`
-  : process.env.EXPO_PUBLIC_API_URL || "http://127.0.0.1:3000/api";
+// The online Render backend works on mobile data (SIM) and any Wi-Fi network.
+export const API_URL = process.env.EXPO_PUBLIC_API_URL || "https://agrisentry2026.onrender.com/api";
 
 // The Laravel web app's own origin (API_URL minus the trailing /api) — goat QR codes
 // encode a link to the web profile page at this origin, e.g. `${WEB_ORIGIN}/goat/5/profile`.

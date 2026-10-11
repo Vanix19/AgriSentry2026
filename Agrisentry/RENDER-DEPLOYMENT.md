@@ -1,11 +1,11 @@
 # Render deployment
 
+Render is the only backend. The old XAMPP/ngrok local server has been removed:
+the web app, mobile app (SIM data or any Wi-Fi), and TTN collar webhook all use
+`https://agrisentry2026.onrender.com`.
+
 Keep the Docker runtime and Apache. In Render use root directory `Agrisentry`,
-<<<<<<< Updated upstream
 Docker build context `.`, Dockerfile path `Dockerfile`, and no Docker
-=======
-Docker build context `.`, Dockerfile path `Dockerfile/Dockerfile`, and no Docker
->>>>>>> Stashed changes
 command override (so the new startup script runs). Health check: `/up`.
 
 The local `.env` is deliberately excluded from the image. Set these in Render:
@@ -33,7 +33,21 @@ TRUSTED_PROXIES=*
 FIREBASE_ENABLED=true
 FIREBASE_FARM_ID=agrisentry
 FIREBASE_CREDENTIALS=/etc/secrets/firebase-credentials.json
+LORAWAN_SHARED_SECRET=<same value as the TTN webhook X-LoRaWAN-Secret header>
+GEMINI_API_KEY=<your key>
+GEMINI_MODEL=<your model>
+SEMAPHORE_API_KEY=<your key>
+SEMAPHORE_SENDER_NAME=<approved sender name>
 ```
+
+With `QUEUE_CONNECTION=sync` no queue worker is needed: collar telemetry is
+published to Firebase inline, and urgent health-alert emails are sent right
+after the response so the TTN webhook is never delayed by SMTP.
+
+TTN webhook: Base URL `https://agrisentry2026.onrender.com/api/lorawan/uplink`,
+Uplink message enabled, header `X-LoRaWAN-Secret`. Free Render instances sleep
+when idle; the first request after a pause can take up to a minute, and TTN may
+retry. A paid instance (or an external uptime ping on `/up`) keeps it awake.
 
 Remove stale `DB_URL` and `DB_SOCKET` overrides when using the individual MySQL
 variables. If your MySQL provider requires a CA, mount it and set

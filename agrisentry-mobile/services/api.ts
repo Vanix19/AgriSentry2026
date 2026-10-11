@@ -71,9 +71,6 @@ export async function apiFetch<T>(
   const isMultipart = typeof FormData !== "undefined" && options.body instanceof FormData;
   const headers: Record<string, string> = {
     Accept: "application/json",
-    // Bypasses the ngrok free-tier browser warning interstitial, which otherwise
-    // returns an HTML page instead of the API response for every request.
-    "ngrok-skip-browser-warning": "true",
     ...(options.body && !isMultipart ? { "Content-Type": "application/json" } : {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...((options.headers as Record<string, string>) || {}),

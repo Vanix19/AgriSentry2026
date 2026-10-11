@@ -9,4 +9,8 @@ html:not([lang="en"]) body:has(.app) .nav-item { height:auto; min-height:48px; l
 html:not([lang="en"]) body:has(.app) .goat-profile-btn { white-space:normal; }
 @media(max-width:600px) { .system-language-floating { position:relative; top:auto; left:auto; margin:8px; width:max-content; } }
 @media print { .system-language-control { display:none; } }
+@if(request()->is('login'))
+.system-language-floating { left:auto; right:12px; }
+@media(max-width:600px) { .system-language-floating { margin-left:auto; margin-right:12px; right:auto; } }
+@endif
 </style>

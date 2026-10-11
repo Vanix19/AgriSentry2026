@@ -55,14 +55,13 @@ actually elsewhere).
 5. **Payload formatters > Uplink > Custom JavaScript formatter** â†’ paste in
    `ttn-payload-formatter.js` from this folder.
 6. **Integrations > Webhooks > Add webhook > Custom webhook**:
-   - Base URL: `https://<your-domain>/api/lorawan/uplink`
+   - Base URL: `https://agrisentry2026.onrender.com/api/lorawan/uplink`
    - Additional header: `X-LoRaWAN-Secret: <your-LORAWAN_SHARED_SECRET>`
-     (this matches `LORAWAN_SHARED_SECRET` already set in `.env` â€” rotate both together if you change it)
+     (this must match `LORAWAN_SHARED_SECRET` in the Render environment â€” rotate both together if you change it)
    - Enable the "Uplink message" event.
 
-If your Laravel app isn't publicly reachable yet (e.g. still on XAMPP
-localhost), TTN can't reach it directly â€” you'll need either a real deployment
-or a tunnel (ngrok/Cloudflare Tunnel) pointed at your local server for testing.
+The webhook goes straight to the online Render backend, so no local server or
+tunnel is needed.
 
 ## 3. AgriSentry â€” register the collar
 

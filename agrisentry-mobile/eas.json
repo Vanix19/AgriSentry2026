@@ -15,13 +15,13 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://pending-untaken-shampoo.ngrok-free.dev/api"
+        "EXPO_PUBLIC_API_URL": "https://agrisentry2026.onrender.com/api"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://pending-untaken-shampoo.ngrok-free.dev/api"
+        "EXPO_PUBLIC_API_URL": "https://agrisentry2026.onrender.com/api"
       }
     }
   },

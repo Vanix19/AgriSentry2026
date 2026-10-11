@@ -6,7 +6,7 @@ import { getToken } from './api';
 /** Download authenticated exports without putting credentials in a URL. */
 export async function downloadExport(path:string, filename:string, mime='application/pdf') {
   const token=await getToken();
-  const headers:Record<string,string>={'ngrok-skip-browser-warning':'true',Accept:mime};
+  const headers:Record<string,string>={Accept:mime};
   if(token)headers.Authorization=`Bearer ${token}`;
   if(Platform.OS==='web') {
     const response=await fetch(API_URL+path,{headers});

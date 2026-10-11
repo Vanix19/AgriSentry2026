@@ -115,4 +115,8 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    // Health alert emails. "sync" (hosts without a queue worker, e.g. Render)
+    // sends after the HTTP response so webhooks are never delayed or failed by SMTP.
+    'alert_queue_connection' => env('ALERT_EMAIL_QUEUE_CONNECTION', env('QUEUE_CONNECTION', 'database')),
+
 ];

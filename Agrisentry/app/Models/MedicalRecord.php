@@ -26,8 +26,7 @@ class MedicalRecord extends Model
         }
 
         // Keep uploaded-file links on the same host and port as the page. An
-        // absolute APP_URL breaks when the app is opened through Artisan's
-        // :8081 server or an ngrok URL.
+        // absolute APP_URL breaks when the app is opened from another host.
         return '/storage/'.ltrim($this->reference_photo_path, '/');
     }
 

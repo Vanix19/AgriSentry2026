@@ -793,7 +793,6 @@ async function fetchAPI(endpoint, options = {}) {
         "X-CSRF-TOKEN": CSRF_TOKEN,
         "X-Requested-With": "XMLHttpRequest",
         "Accept": "application/json",
-        "ngrok-skip-browser-warning": "true",
     };
 
     const attempts = (options.method || 'GET').toUpperCase() === 'GET' ? 2 : 1;

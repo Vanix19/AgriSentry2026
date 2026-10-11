@@ -37,7 +37,7 @@ document.getElementById('resend-form').addEventListener('submit', async (event) 
     try {
         const response = await fetch(form.action, {
             method: 'POST', body: new FormData(form),
-            headers: {Accept: 'application/json', 'ngrok-skip-browser-warning': '1'},
+            headers: {Accept: 'application/json'},
         });
         const data = await response.json().catch(() => null);
         if (response.redirected) { window.location.assign(response.url); return; }

@@ -6,4 +6,4 @@ Included: three-step recovery, sign-in OTP and resend, assigned roles, profile/s
 
 Release checks: native API URL must use HTTPS; Android session token uses SecureStore; API tokens are issued only after OTP verification; malformed API responses are rejected; server-side feature permissions remain enforced. Backend credentials and local environment files are excluded by .easignore.
 
-The backend URL is the existing ngrok address. Laravel, MySQL, Apache and the tunnel must remain online. This is a targeted regression review, not a full security audit. Installation on the user's device remains to be tested.
+The backend URL is the online Render service `https://agrisentry2026.onrender.com/api`, so the app works on mobile data (SIM) and any Wi-Fi without a local server or tunnel. Rebuild the APK so installed apps use this URL. This is a targeted regression review, not a full security audit. Installation on the user's device remains to be tested.
