@@ -3,7 +3,7 @@ import { useLiveRefresh } from "@/hooks/use-live-refresh";
 import React, { useCallback, useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Alert as RNAlert, ActivityIndicator, RefreshControl } from "react-native";
 import { Text, TextInput } from "@/components/i18n-text";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Stack, useRouter } from "expo-router";
 
 import { useAuth } from "@/contexts/auth-context";
@@ -23,6 +23,8 @@ export default function CollarsScreen() {
   const [error, setError] = useState<string | null>(null);
 
   const [addOpen, setAddOpen] = useState(false);
+  // The bottom sheet extends behind Android's navigation bar; keep its buttons above it.
+  const sheetBottom = { paddingBottom: useSafeAreaInsets().bottom + 20 };
   const [collarCode, setCollarCode] = useState("");
   const [devEui, setDevEui] = useState("");
   const [batteryLevel, setBatteryLevel] = useState("");
@@ -178,7 +180,7 @@ export default function CollarsScreen() {
 
       <Modal visible={addOpen} transparent animationType="slide">
         <View style={styles.modalOverlay}>
-          <View style={styles.formModal}>
+          <View style={[styles.formModal, sheetBottom]}>
             <Text style={styles.modalTitleText}>Add Collar</Text>
 
             <TextInput

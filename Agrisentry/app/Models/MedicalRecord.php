@@ -25,9 +25,14 @@ class MedicalRecord extends Model
             return null;
         }
 
-        // Keep uploaded-file links on the same host and port as the page. An
-        // absolute APP_URL breaks when the app is opened from another host.
-        return '/storage/'.ltrim($this->reference_photo_path, '/');
+        // Relative so links stay on the host the page was opened from. The file
+        // name keeps its extension so pages can tell PDFs from images.
+        return '/medical-files/'.$this->id.'/'.basename($this->reference_photo_path);
+    }
+
+    public function file()
+    {
+        return $this->hasOne(MedicalRecordFile::class);
     }
 
     public function goat()

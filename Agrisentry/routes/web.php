@@ -26,6 +26,11 @@ Route::get('/goat/{id}/profile', [GoatProfileController::class, 'show'])
     ->middleware('auth')
     ->name('goat.profile.show');
 
+// Session (web) or Bearer token (mobile app).
+Route::get('/medical-files/{id}/{name}', [\App\Http\Controllers\MedicalFileController::class, 'show'])
+    ->whereNumber('id')
+    ->middleware(['auth:sanctum', 'throttle:120,1']);
+
 Route::get('/admin/users', function () {
     return view('admin-users');
 })->middleware(['auth', 'role:Admin']);

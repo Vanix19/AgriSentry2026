@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Goat;
 use App\Models\MedicalRecord;
+use App\Models\MedicalRecordFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MedicalRecordController extends Controller
 {
@@ -29,12 +31,7 @@ class MedicalRecordController extends Controller
             'reference_photo' => 'nullable|file|mimes:jpeg,jpg,png,webp,pdf|max:20480',
         ]);
 
-        if ($request->hasFile('reference_photo')) {
-            $validated['reference_photo_path'] = $request->file('reference_photo')->store('medical-references', 'public');
-        }
-        unset($validated['reference_photo']);
-
-        $medicalRecord = MedicalRecord::create($validated);
+        $medicalRecord = $this->createWithAttachment($request, $validated);
 
         return response()->json([
             'message' => 'Medical record saved successfully.',
@@ -56,18 +53,35 @@ class MedicalRecordController extends Controller
             'reference_photo' => 'nullable|file|mimes:jpeg,jpg,png,webp,pdf|max:20480',
         ]);
 
-        if ($request->hasFile('reference_photo')) {
-            $validated['reference_photo_path'] = $request->file('reference_photo')->store('medical-references', 'public');
-        }
-        unset($validated['reference_photo']);
-
         $validated['goat_id'] = $goat->id;
 
-        $medicalRecord = MedicalRecord::create($validated);
+        $medicalRecord = $this->createWithAttachment($request, $validated);
 
         return response()->json([
             'message' => 'Medical record saved successfully.',
             'medical_record' => $medicalRecord
         ], 201);
+    }
+
+    /** Saves the record and its optional attachment together; files are kept in the database. */
+    private function createWithAttachment(Request $request, array $validated): MedicalRecord
+    {
+        unset($validated['reference_photo']);
+        $upload = $request->file('reference_photo');
+        if ($upload) $validated['reference_photo_path'] = 'medical-references/'.$upload->hashName();
+
+        return DB::transaction(function () use ($validated, $upload) {
+            $medicalRecord = MedicalRecord::create($validated);
+            if ($upload) {
+                MedicalRecordFile::create([
+                    'medical_record_id' => $medicalRecord->id,
+                    'mime_type' => $upload->getMimeType(),
+                    'original_name' => mb_substr($upload->getClientOriginalName(), 0, 255),
+                    'size' => $upload->getSize(),
+                    'content' => file_get_contents($upload->getRealPath()),
+                ]);
+            }
+            return $medicalRecord;
+        });
     }
 }

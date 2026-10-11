@@ -6,7 +6,8 @@ import DateFilter from "@/components/DateFilter";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Alert as RNAlert, ActivityIndicator, RefreshControl, Linking, Platform, Animated, Easing, Image } from "react-native";
 import { Text, TextInput } from "@/components/i18n-text";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import MedicalAttachment from "@/components/MedicalAttachment";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import QRCode from "react-native-qrcode-svg";
 import Svg, { Circle, Line, Polyline, Rect } from "react-native-svg";
@@ -93,6 +94,8 @@ export default function GoatDetailsScreen() {
   const [recordDate, setRecordDate] = useState("");
   const [recordAdministeredBy, setRecordAdministeredBy] = useState("");
   const [recordPhoto, setRecordPhoto] = useState<ImagePicker.ImagePickerAsset | null>(null);
+  // Bottom sheets extend behind Android's navigation bar; keep their buttons above it.
+  const sheetBottom = { paddingBottom: useSafeAreaInsets().bottom + 20 };
   const [savingRecord, setSavingRecord] = useState(false);
 
   const load = useCallback(async () => {
@@ -278,7 +281,7 @@ export default function GoatDetailsScreen() {
           </View>
         </View>
 
-        <Modal visible={editOpen} transparent animationType="slide" onRequestClose={() => {if (!savingProfile) setEditOpen(false);}}><View style={styles.modalOverlay}><ScrollView style={{maxHeight:"85%"}} contentContainerStyle={styles.formModal} keyboardShouldPersistTaps="handled"><Text style={styles.modalTitleText}>Edit goat profile</Text>
+        <Modal visible={editOpen} transparent animationType="slide" onRequestClose={() => {if (!savingProfile) setEditOpen(false);}}><View style={styles.modalOverlay}><ScrollView style={{maxHeight:"85%"}} contentContainerStyle={[styles.formModal, sheetBottom]} keyboardShouldPersistTaps="handled"><Text style={styles.modalTitleText}>Edit goat profile</Text>
         {(["name","breed","age","sex","weight","owner","ear_tag","color"] as const).map(key => <View key={key}><Text style={styles.recordDetail}>{key === "ear_tag" ? "Ear Tag / Goat ID" : key[0].toUpperCase()+key.slice(1)}</Text>{key === "breed" ? <BreedSelect value={String(draft[key] ?? "")} onChange={value => setDraft(current => ({...current,[key]:value}))} /> : <TextInput accessibilityLabel={key} style={styles.input} value={String(draft[key] ?? "")} onChangeText={value => setDraft(current => ({...current,[key]:value}))} />}</View>)}
         <TouchableOpacity disabled={savingProfile} style={styles.greenButton} onPress={async () => {if (!draft.name?.trim() || !draft.ear_tag?.trim()) {RNAlert.alert("Missing details","Name and ear tag are required.");return;} setSavingProfile(true);try {await updateGoat(goat.id,draft);await load();setEditOpen(false);}catch(e){RNAlert.alert("Could not save", e instanceof Error ? e.message : "Please try again.");}finally{setSavingProfile(false);}}}><Text style={styles.greenButtonText}>{savingProfile ? "Saving…" : "Save changes"}</Text></TouchableOpacity>
         <TouchableOpacity disabled={savingProfile} style={styles.cancelButton} onPress={() => setEditOpen(false)}><Text style={styles.cancelText}>Cancel</Text></TouchableOpacity>
@@ -440,7 +443,7 @@ export default function GoatDetailsScreen() {
                       {record.administered_by ? (
                         <Text style={styles.recordDetail}>By: {record.administered_by}</Text>
                       ) : null}
-                      {record.reference_photo_url ? <Image source={{ uri: record.reference_photo_url }} style={styles.recordPhoto} /> : null}
+                      {record.reference_photo_url ? <MedicalAttachment url={record.reference_photo_url} imageStyle={styles.recordPhoto} /> : null}
                     </View>
                   </View>
                 ))
@@ -452,7 +455,7 @@ export default function GoatDetailsScreen() {
 
       <Modal visible={addRecordOpen} transparent animationType="slide">
         <View style={styles.modalOverlay}>
-          <View style={styles.formModal}>
+          <View style={[styles.formModal, sheetBottom]}>
             <Text style={styles.modalTitleText}>Add Medical Record</Text>
 
             <TextInput
@@ -714,8 +717,8 @@ const darkStyles = StyleSheet.create({
   chartEmpty: { height: 150, alignItems: "center", justifyContent: "center" },
   chartLabels: { marginTop: -17, paddingLeft: 34, flexDirection: "row", justifyContent: "space-between" },
   chartLabel: { color: "#718096", fontSize: 9 },
-  medicalHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 16 },
-  medicalTitle: { fontSize: 22, fontWeight: "800", color: "#F8FAFC" },
+  medicalHeader: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 10, marginBottom: 16 },
+  medicalTitle: { width: "100%", fontSize: 22, fontWeight: "800", color: "#F8FAFC" },
   medicalRecord: { flexDirection: "row", alignItems: "flex-start", paddingVertical: 14, borderTopWidth: 1, borderTopColor: "#2A3642" },
   greenButton: { backgroundColor: "#087B37", paddingVertical: 10, paddingHorizontal: 18, borderRadius: 12, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "#45DB6B" },
   greenButtonText: { color: "#FFFFFF", fontWeight: "700" },

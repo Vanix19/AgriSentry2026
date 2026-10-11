@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useWindowDimensions, View, StyleSheet, ScrollView, TouchableOpacity, StatusBar, Modal, Alert as RNAlert, KeyboardAvoidingView, Platform, ActivityIndicator, RefreshControl, Image } from "react-native";
 import { Text, TextInput } from "@/components/i18n-text";
 
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { CameraView, useCameraPermissions, type BarcodeScanningResult, type BarcodeSettings } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
@@ -1018,10 +1018,12 @@ function AddGoatModal({
 }) {
   const [breedOpen, setBreedOpen] = useState(false);
   const [sexOpen, setSexOpen] = useState(false);
+  const insets = useSafeAreaInsets();
   return (
-    <Modal visible={visible} transparent animationType="slide">
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={() => { if (!saving) onClose(); }}>
       <View style={styles.modalOverlay}>
-        <ScrollView style={[styles.formModal,{maxHeight:"90%"}]} keyboardShouldPersistTaps="handled">
+        {/* Bottom padding keeps the buttons above Android's navigation bar. */}
+        <ScrollView style={[styles.formModal,{maxHeight:"90%"}]} contentContainerStyle={{ paddingBottom: insets.bottom + 24 }} keyboardShouldPersistTaps="handled">
           <Text style={styles.modalTitle}>Add Goat</Text>
           <Text style={styles.modalSubtitle}>Register a new animal in the herd</Text>
 

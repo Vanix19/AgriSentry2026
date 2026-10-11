@@ -29,6 +29,9 @@ RUN apt-get update && apt-get install -y \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
+# Medical attachments may be up to 20 MB (PHP's default upload limit is 2 MB)
+RUN printf 'upload_max_filesize=20M\npost_max_size=25M\nmemory_limit=256M\n' > /usr/local/etc/php/conf.d/uploads.ini
+
 # Remove Apache ServerName warning
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 

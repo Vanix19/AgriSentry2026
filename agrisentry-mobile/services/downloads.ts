@@ -5,18 +5,20 @@ import { getToken } from './api';
 
 /** Download authenticated exports without putting credentials in a URL. */
 export async function downloadExport(path:string, filename:string, mime='application/pdf') {
+  // API paths are relative to /api; attachment links are full web URLs.
+  const url=/^https?:\/\//.test(path)?path:API_URL+path;
   const token=await getToken();
   const headers:Record<string,string>={Accept:mime};
   if(token)headers.Authorization=`Bearer ${token}`;
   if(Platform.OS==='web') {
-    const response=await fetch(API_URL+path,{headers});
+    const response=await fetch(url,{headers});
     if(!response.ok)throw new Error('Could not download this file. Check your access and try again.');
-    const url=URL.createObjectURL(await response.blob()),link=document.createElement('a');
-    link.href=url;link.download=filename;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);return;
+    const blobUrl=URL.createObjectURL(await response.blob()),link=document.createElement('a');
+    link.href=blobUrl;link.download=filename;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(blobUrl),10000);return;
   }
   const file=(FileSystem.cacheDirectory||FileSystem.documentDirectory)+filename;
   try {
-    const result=await FileSystem.downloadAsync(API_URL+path,file,{headers});
+    const result=await FileSystem.downloadAsync(url,file,{headers});
     if(result.status!==200)throw new Error('Could not download this file. Check your access and try again.');
     if(Platform.OS==='android') {
       const permission=await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();

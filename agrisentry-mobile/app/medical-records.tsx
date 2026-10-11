@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Alert as RNAlert, ActivityIndicator, RefreshControl, Image } from "react-native";
 import { Text, TextInput } from "@/components/i18n-text";
 import * as ImagePicker from "expo-image-picker";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import MedicalAttachment from "@/components/MedicalAttachment";
 import { Stack, useRouter } from "expo-router";
 
 import {downloadExport} from "@/services/downloads";
@@ -24,6 +25,8 @@ export default function MedicalRecordsScreen() {
   const [error, setError] = useState<string | null>(null);
 
   const [addOpen, setAddOpen] = useState(false);
+  // The bottom sheet extends behind Android's navigation bar; keep its buttons above it.
+  const sheetBottom = { paddingBottom: useSafeAreaInsets().bottom + 20 };
   const [selectedGoatId, setSelectedGoatId] = useState<number | null>(null);
   const [recordType, setRecordType] = useState("Vaccination");
   const [title, setTitle] = useState("");
@@ -162,7 +165,7 @@ export default function MedicalRecordsScreen() {
                 Administered by: {record.administered_by || "N/A"}
                 {record.next_due_date ? ` · Next due: ${record.next_due_date}` : ""}
               </Text>
-              {record.reference_photo_url ? <Image source={{ uri: record.reference_photo_url }} style={styles.referenceImage} /> : null}
+              {record.reference_photo_url ? <MedicalAttachment url={record.reference_photo_url} imageStyle={styles.referenceImage} /> : null}
             </View>
           ))
         )}
@@ -170,7 +173,7 @@ export default function MedicalRecordsScreen() {
 
       <Modal visible={addOpen} transparent animationType="slide">
         <View style={styles.modalOverlay}>
-          <ScrollView contentContainerStyle={styles.formModal} keyboardShouldPersistTaps="handled">
+          <ScrollView contentContainerStyle={[styles.formModal, sheetBottom]} keyboardShouldPersistTaps="handled">
             <Text style={styles.modalTitleText}>Add Medical Record</Text>
 
             <Text style={styles.label}>Goat</Text>
