@@ -79,6 +79,23 @@ We|Miy|Miy|Mi
 Th|Huw|Huw|Ju
 Fr|Biy|Biy|Vi
 Sa|Sab|Sab|Sa
+Back|Balik|Bumalik|Volver
+Save|I-save|I-save|Guardar
+Retry|Sulayi pag-usab|Subukan muli|Reintentar
+Edit|Usba|I-edit|Editar
+Search|Pangita|Maghanap|Buscar
+OK|OK|OK|Aceptar
+Yes|Oo|Oo|Sí
+No|Dili|Hindi|No
+Username|Username|Username|Usuario
+Password|Password|Password|Contraseña
+Reports|Mga taho|Mga ulat|Informes
+Livestock selection|Pagpili sa kahayupan|Pagpili ng hayop|Selección de ganado
+Recover your account|Bawia ang imong account|Bawiin ang iyong account|Recupera tu cuenta
+Verifying...|Gi-verify...|Bine-verify...|Verificando...
+Saving…|Gi-save…|Sine-save…|Guardando…
+Log out?|Mogawas?|Mag-log out?|¿Cerrar sesión?
+Are you sure you want to log out?|Sigurado ka nga mogawas ka?|Sigurado ka bang gusto mong mag-log out?|¿Seguro que quieres cerrar sesión?
 Live updates|Diretso nga update|Live na update|Actualizaciones en vivo
 Waking up the server. This can take up to a minute on first use…|Ginapukaw ang server. Mahimong moabot og usa ka minuto sa unang gamit…|Ginigising ang server. Maaaring umabot ng isang minuto sa unang gamit…|Activando el servidor. Puede tardar hasta un minuto la primera vez…
 `;
