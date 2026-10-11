@@ -24,6 +24,7 @@ tests
 *firebase-adminsdk*.json
 *service-account*.json
 **/*.pem
+!docker/aiven-ca.pem
 **/*.key
 *.sql
 *.sqlite

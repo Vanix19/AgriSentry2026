@@ -1174,8 +1174,8 @@ renderHealthLogs = function() {
             <div class="event-goat"><span aria-label="${b || 'Unknown'} temperature" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${b === 'low' ? '#2563EB' : b === 'high' ? '#DC2626' : '#16A34A'}"></span><span class="event-temp-icon ${b}">♨</span><div><b>${goatName}</b><span>${goatCode}</span><small>◷ ${log.created_at ? new Date(log.created_at).toLocaleString(document.documentElement.lang) : "No timestamp"}</small></div></div>
             <div class="event-details"><span><small>Event Type</small><b>${escapeHtml(log.event_type || "Health Event")}</b></span><span><small>Collar ID</small><b>${log.goat?.collar?.collar_code ? escapeHtml(log.goat.collar.collar_code) : "N/A"}</b></span></div>
             <div class="event-reading"><span><small>Temperature</small><b class="temp ${getTempClass(log.temperature)}"><i class="led ${led}"></i>${log.temperature ?? "N/A"}°C</b></span><span><small>Movement</small><b class="t-n">${escapeHtml(log.motion_anomaly || log.movement) || "N/A"}</b></span></div>
-            <div class="event-led"><small>LED Status</small><b><i class="led ${led}"></i>${escapeHtml(log.led_status) || "N/A"}</b></div>
-            <div class="event-severity"><small>Severity</small><span class="status-chip ${String(log.severity).toLowerCase().includes("high") ? "status-urgent" : getStatusClass(log.severity)}">${escapeHtml(log.severity) || "N/A"}</span></div>
+            <div class="event-led"><small>LED Status</small><b class="${getTempClass(log.temperature)}"><i class="led ${led}"></i>${escapeHtml(log.led_status) || "N/A"}</b></div>
+            <div class="event-severity"><small>Severity</small><span class="status-chip ${b === "low" ? "status-low" : b === "high" || severity.includes("high") ? "status-urgent" : getStatusClass(log.severity)}">${escapeHtml(log.severity) || "N/A"}</span></div>
         </div>`;
     }).join("");
 };

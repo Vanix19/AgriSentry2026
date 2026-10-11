@@ -443,6 +443,7 @@ body {
 .status-normal { background: var(--green-bg-strong); color: var(--green-dk); }
 .status-urgent { background: var(--red-bg-strong); color: var(--red-dk); }
 .status-monitoring { background: var(--amber-bg); color: var(--amber); }
+.status-low { background: var(--blue-bg-strong); color: var(--blue); }
 
 .batt-wrap { display: flex; align-items: center; gap: 6px; }
 .batt-bar { width: 34px; height: 8px; border-radius: 3px; background: var(--bg-raised); border: 1px solid var(--border); overflow: hidden; }
@@ -1179,9 +1180,16 @@ body:has(.app) .collars-footer { min-height: 86px; margin-top: auto; display: fl
 :root[data-theme="light"] body:has(.app) #screen-logs .event-goat small,
 :root[data-theme="light"] body:has(.app) #screen-logs .health-event-row small { color: #536071; }
 :root[data-theme="light"] body:has(.app) #screen-logs .health-event-row b { color: #3f4b5a; }
-:root[data-theme="light"] body:has(.app) #screen-logs .event-reading .temp,
-:root[data-theme="light"] body:has(.app) #screen-logs .event-led b { color: #1475dc; }
-:root[data-theme="light"] body:has(.app) #screen-logs .event-severity .status-chip { min-width: 65px; justify-content: center; color: #fff; background: linear-gradient(#f43f3f,#d91616); box-shadow: 0 3px 7px rgba(220,38,38,.2); }
+:root[data-theme="light"] body:has(.app) #screen-logs .event-reading .temp.t-n,
+:root[data-theme="light"] body:has(.app) #screen-logs .event-led b.t-n { color: #15803d; }
+:root[data-theme="light"] body:has(.app) #screen-logs .event-reading .temp.t-h,
+:root[data-theme="light"] body:has(.app) #screen-logs .event-led b.t-h { color: #dc2626; }
+:root[data-theme="light"] body:has(.app) #screen-logs .event-reading .temp.t-l,
+:root[data-theme="light"] body:has(.app) #screen-logs .event-led b.t-l { color: #1475dc; }
+:root[data-theme="light"] body:has(.app) #screen-logs .event-severity .status-chip { min-width: 65px; justify-content: center; color: #fff; background: linear-gradient(#22b45a,#15803d); box-shadow: 0 3px 7px rgba(22,163,74,.2); }
+:root[data-theme="light"] body:has(.app) #screen-logs .event-severity .status-chip.status-urgent { background: linear-gradient(#f43f3f,#d91616); box-shadow: 0 3px 7px rgba(220,38,38,.2); }
+:root[data-theme="light"] body:has(.app) #screen-logs .event-severity .status-chip.status-monitoring { background: linear-gradient(#f59e0b,#d97706); box-shadow: 0 3px 7px rgba(217,119,6,.2); }
+:root[data-theme="light"] body:has(.app) #screen-logs .event-severity .status-chip.status-low { background: linear-gradient(#3b82f6,#1d4ed8); box-shadow: 0 3px 7px rgba(37,99,235,.2); }
 :root[data-theme="light"] body:has(.app) #screen-logs .health-log-footer { display: none; }
 :root[data-theme="light"] body:has(.app) #screen-logs .btn-primary { background: linear-gradient(#10a653,#07843f); }
 

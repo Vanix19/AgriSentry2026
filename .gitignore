@@ -13,6 +13,7 @@ vendor/
 *.log
 *.pid
 *.pem
+!Agrisentry/docker/aiven-ca.pem
 *.key
 *firebase-adminsdk*.json
 *service-account*.json
