@@ -601,9 +601,9 @@ body .container { width:calc(100% - var(--console-sidebar, 260px)); margin-left:
 
         <div class="sidebar-foot">
             <div class="led-legend">
-                <span><span class="led led-b"></span> &lt;33.0°</span>
-                <span><span class="led led-g"></span> 33–38.5°</span>
-                <span><span class="led led-r"></span> &gt;38.5°</span>
+                <span><span class="led led-b"></span> &lt;35.5°</span>
+                <span><span class="led led-g"></span> 35.5–37.2°</span>
+                <span><span class="led led-r"></span> &gt;37.2°</span>
             </div>
         </div>
     </div>
@@ -644,7 +644,7 @@ body .container { width:calc(100% - var(--console-sidebar, 260px)); margin-left:
             <div class="goat-name">{{ $goat->name }}</div>
             <div class="goat-info">{{ $goat->code }}{{ $goat->collar ? ' • ' . $goat->collar->collar_code : '' }}</div>
             @if($goat->temperature)
-                <div class="temp-alert">{{ $goat->temperature > 38.5 ? '🔴 High' : ($goat->temperature < 33.0 ? '🔵 Low' : '🟢 Normal') }} – {{ $goat->temperature }}°C</div>
+                <div class="temp-alert">{{ $goat->temperature > 37.2 ? '🔴 High' : ($goat->temperature < 35.5 ? '🔵 Low' : '🟢 Normal') }} – {{ $goat->temperature }}°C</div>
             @endif
         </div>
 
@@ -940,7 +940,7 @@ body .container { width:calc(100% - var(--console-sidebar, 260px)); margin-left:
             let temperature = document.querySelector('.temp-alert');
             if (!temperature) { temperature = document.createElement('div'); temperature.className = 'temp-alert'; document.querySelector('.header').appendChild(temperature); }
             temperature.textContent = reading.temperature == null ? 'No temperature reading' : `${reading.status || ''} — ${reading.temperature}°C`;
-            temperature.style.color = reading.temperature == null ? 'var(--shell-muted)' : reading.temperature < 33 ? '#2563eb' : reading.temperature > 38.5 ? '#dc2626' : '#15803d';
+            temperature.style.color = reading.temperature == null ? 'var(--shell-muted)' : reading.temperature < 35.5 ? '#2563eb' : reading.temperature > 37.2 ? '#dc2626' : '#15803d';
         });
         let batteryRefreshPending = false;
         setInterval(async () => {

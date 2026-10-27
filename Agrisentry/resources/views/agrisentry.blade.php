@@ -130,9 +130,9 @@ body:has(.app) #screen-dashboard .tile-grid { grid-template-columns:repeat(auto-
                 </optgroup>
             </select>
             <div class="led-legend">
-                <span><span class="led led-b"></span> &lt;33.0°</span>
-                <span><span class="led led-g"></span> 33–38.5°</span>
-                <span><span class="led led-r"></span> &gt;38.5°</span>
+                <span><span class="led led-b"></span> &lt;35.5°</span>
+                <span><span class="led led-g"></span> 35.5–37.2°</span>
+                <span><span class="led led-r"></span> &gt;37.2°</span>
             </div>
         </div>
     </div>
@@ -185,7 +185,7 @@ body:has(.app) #screen-dashboard .tile-grid { grid-template-columns:repeat(auto-
                     <div class="stat">
                         <div class="stat-top"><span class="stat-label">Normal</span><span class="stat-icon si-green"><svg class="icon"><use href="#i-check"/></svg></span></div>
                         <div class="stat-val" id="normal-goats">0</div>
-                        <div class="stat-foot">33.0°C – 38.5°C</div>
+                        <div class="stat-foot">35.5°C – 37.2°C</div>
                     </div>
                     <div class="stat">
                         <div class="stat-top"><span class="stat-label">Warning</span><span class="stat-icon si-amber"><svg class="icon"><use href="#i-eye"/></svg></span></div>
@@ -527,15 +527,15 @@ body:has(.app) #screen-dashboard .tile-grid { grid-template-columns:repeat(auto-
                             <div class="side-card-body">
                                 <div class="led-reference green-ref">
                                     <span class="led led-g"></span>
-                                    <div><div class="led-title" style="color:var(--green-dk)">Green — Normal</div><div class="led-desc">33.0°C – 38.5°C</div></div>
+                                    <div><div class="led-title" style="color:var(--green-dk)">Green — Normal</div><div class="led-desc">35.5°C – 37.2°C</div></div>
                                 </div>
                                 <div class="led-reference red-ref">
                                     <span class="led led-r"></span>
-                                    <div><div class="led-title" style="color:var(--red)">Red — High Temperature</div><div class="led-desc">&gt; 38.5°C · possible fever / heat stress</div></div>
+                                    <div><div class="led-title" style="color:var(--red)">Red — High Temperature</div><div class="led-desc">&gt; 37.2°C · possible fever / heat stress</div></div>
                                 </div>
                                 <div class="led-reference blue-ref">
                                     <span class="led led-b"></span>
-                                    <div><div class="led-title" style="color:var(--blue)">Blue — Low Temperature</div><div class="led-desc">&lt; 33.0°C · possible hypothermia</div></div>
+                                    <div><div class="led-title" style="color:var(--blue)">Blue — Low Temperature</div><div class="led-desc">&lt; 35.5°C · possible hypothermia</div></div>
                                 </div>
                             </div>
                         </div>
@@ -889,12 +889,12 @@ async function loadData(incremental = false) {
 }
 
 /* ============ TEMPERATURE / STATUS HELPERS ============
-   Bands per AgriSentry spec: blue <33.0°C, green 33.0–38.5°C, red >38.5°C */
+   Bands per AgriSentry spec: blue <35.5°C, green 35.5–37.2°C, red >37.2°C */
 function band(temp) {
     const t = parseFloat(temp);
     if (isNaN(t)) return null;
-    if (t > 38.5) return "high";
-    if (t < 33.0) return "low";
+    if (t > 37.2) return "high";
+    if (t < 35.5) return "low";
     return "normal";
 }
 function getTempClass(temp) {

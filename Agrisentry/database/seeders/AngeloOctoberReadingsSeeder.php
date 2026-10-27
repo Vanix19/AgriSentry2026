@@ -28,10 +28,10 @@ class AngeloOctoberReadingsSeeder extends Seeder
             // Skip slots that already hold a reading (real collar data or a previous run).
             if (HealthLog::where('goat_id', $goat->id)->whereBetween('created_at', [$at->subMinutes(15), $at->addMinutes(15)])->exists()) continue;
 
-            // Low end of the normal 33.0–38.5 °C range: coolest before dawn, warmest mid-afternoon.
+            // Low end of the normal 35.5–37.2 °C range: coolest before dawn, warmest mid-afternoon.
             $hour = $at->setTimezone('Asia/Manila')->hour + $at->minute / 60;
-            $temperature = round(34.25 - 0.55 * cos(($hour - 3) / 24 * 2 * M_PI) + mt_rand(-15, 15) / 100, 1);
-            $temperature = max(33.5, min(35.0, $temperature));
+            $temperature = round(36.0 - 0.3 * cos(($hour - 3) / 24 * 2 * M_PI) + mt_rand(-15, 15) / 100, 1);
+            $temperature = max(35.6, min(36.4, $temperature));
 
             $log = new HealthLog([
                 'goat_id' => $goat->id,

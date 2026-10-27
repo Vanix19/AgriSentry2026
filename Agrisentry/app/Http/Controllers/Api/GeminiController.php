@@ -32,8 +32,8 @@ class GeminiController extends Controller
         $languageName = ['en' => 'English', 'ceb' => 'Cebuano', 'fil' => 'Filipino', 'es' => 'Spanish'][$validated['language'] ?? ''] ?? null;
 
         try {
-            $clinicalContext = "AgriSentry skin-temperature display: Low below 33.0°C; Normal from 33.0°C to 38.5°C inclusive; High above 38.5°C. " .
-                "Temperature AI advisory uses five labels: Urgent Low below 32.0°C; Warning Low from 32.0°C to below 33.0°C (32.0–32.9°C at one decimal); Normal from 33.0°C to 38.5°C inclusive; Warning High above 38.5°C through 39.5°C (38.6–39.5°C at one decimal); Urgent High above 39.5°C. " .
+            $clinicalContext = "AgriSentry skin-temperature display: Low below 35.5°C; Normal from 35.5°C to 37.2°C inclusive; High above 37.2°C. " .
+                "Temperature AI advisory uses five labels: Urgent Low below 34.5°C; Warning Low from 34.5°C to below 35.5°C (34.5–35.4°C at one decimal); Normal from 35.5°C to 37.2°C inclusive; Warning High above 37.2°C through 38.2°C (37.3–38.2°C at one decimal); Urgent High above 38.2°C. " .
                 "LED colors: Blue means Low, Green means Normal, and Red means High. Use the appropriate advisory label for the supplied temperature. These are configured skin-sensor monitoring thresholds, not core body temperature ranges. " .
                 "Prolonged Inactivity means sustained low movement for 90 minutes; Excessive Movement means sustained high-intensity movement for more than 15 seconds. ";
             $readingContext = "Reported severity: ".($validated['severity'] ?? 'not supplied')."; temperature: ".($validated['temperature'] ?? 'not supplied')."; movement: ".($validated['movement'] ?? 'not supplied').". ";
@@ -82,7 +82,7 @@ class GeminiController extends Controller
         'message' => $message,
         'question' => $question,
         'advice' => 'AI advice is temporarily unavailable. ' . (\App\Services\VetAdvisoryService::temperatureRecommendation($validated['temperature'] ?? null) ?? \App\Services\VetAdvisoryService::recommendationFor(
-                    isset($validated['temperature']) ? ($validated['temperature'] < 33 ? 'Low Temperature' : ($validated['temperature'] > 38.5 ? 'High Temperature' : 'Observation')) : 'Observation',
+                    isset($validated['temperature']) ? ($validated['temperature'] < 35.5 ? 'Low Temperature' : ($validated['temperature'] > 37.2 ? 'High Temperature' : 'Observation')) : 'Observation',
                     $validated['severity'] ?? (isset($validated['temperature']) ? \App\Services\HealthAlertEvaluator::resolveStatus($validated['temperature'])['status'] : null)
                 )),
     ], 503);

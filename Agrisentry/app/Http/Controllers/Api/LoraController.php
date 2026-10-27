@@ -275,11 +275,11 @@ class LoraController extends Controller
     // firmware uses to pick the status LED (see agrisentry-collar.ino).
     private function ledLabel(float $temperature): string
     {
-        if ($temperature > 38.5) {
+        if ($temperature > 37.2) {
             return self::LED_LABELS[1]; // Red
         }
 
-        if ($temperature < 33.0) {
+        if ($temperature < 35.5) {
             return self::LED_LABELS[2]; // Blue
         }
 

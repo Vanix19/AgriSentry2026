@@ -52,7 +52,7 @@ class SettingsAndReportsTest extends TestCase
     public function test_date_range_includes_entire_end_day_and_uses_historical_readings(): void
     {
         $goat = Goat::create(['name' => 'Test', 'code' => 'GT-001', 'temperature' => 99, 'status' => 'Urgent']);
-        foreach ([['2026-08-31 23:59:59', 50], ['2026-09-01 00:00:00', 32], ['2026-09-02 23:59:59', 34], ['2026-09-03 00:00:00', 50]] as [$time, $temperature]) {
+        foreach ([['2026-08-31 23:59:59', 50], ['2026-09-01 00:00:00', 35], ['2026-09-02 23:59:59', 37], ['2026-09-03 00:00:00', 50]] as [$time, $temperature]) {
             $log = HealthLog::create(['goat_id' => $goat->id, 'event_type' => 'Telemetry', 'temperature' => $temperature]);
             $log->forceFill(['created_at' => $time])->save();
         }
@@ -62,8 +62,8 @@ class SettingsAndReportsTest extends TestCase
         $undated->forceFill(['created_at' => '2026-09-01 15:00:00'])->save();
         $this->actingAs(User::factory()->create(['role' => 'Admin']))->getJson('/api/reports?start_date=2026-09-01&end_date=2026-09-02')
             ->assertOk()->assertJsonPath('period', 'custom')->assertJsonPath('health_logs_count', 2)
-            ->assertJsonPath('medical_records_count', 2)->assertJsonPath('temp_avg', 33)->assertJsonPath('temp_low', 32)
-            ->assertJsonPath('temp_high', 34)->assertJsonPath('normal_goats', 1)->assertJsonPath('urgent_goats', 0);
+            ->assertJsonPath('medical_records_count', 2)->assertJsonPath('temp_avg', 36)->assertJsonPath('temp_low', 35)
+            ->assertJsonPath('temp_high', 37)->assertJsonPath('normal_goats', 1)->assertJsonPath('urgent_goats', 0);
         $this->getJson('/api/reports?start_date=2026-09-02&end_date=2026-09-02')->assertOk()->assertJsonPath('health_logs_count', 1);
         $this->getJson('/api/reports?start_date=2025-01-01&end_date=2025-01-01')->assertOk()->assertJsonPath('health_logs_count', 0)->assertJsonPath('temp_avg', null)->assertJsonPath('normal_goats', 0);
     }

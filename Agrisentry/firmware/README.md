@@ -105,7 +105,7 @@ the `#define`s accordingly.
 ### What the sketch does
 
 - Reads DS18B20 temperature and classifies Normal/High/Low using the *same*
-  38.5Â°C / 33.0Â°C thresholds as `App\Services\HealthAlertEvaluator`, and
+  37.2Â°C / 35.5Â°C thresholds as `App\Services\HealthAlertEvaluator`, and
   drives the 3-color LED to match.
 - Reads MPU6050 acceleration magnitude and buckets it into a rough movement
   label (Normal/Active/Low Movement/Abnormal Orientation) â€” this is a crude

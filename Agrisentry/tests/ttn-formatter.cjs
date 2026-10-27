@@ -5,8 +5,8 @@ const context = {};
 vm.createContext(context);
 vm.runInContext(fs.readFileSync(require('node:path').join(__dirname, '../firmware/agrisentry-collar/ttn-payload-formatter.js'), 'utf8'), context);
 for (const [motion, battery, expected] of [[1,48,'Prolonged Inactivity'],[3,25,'Excessive Movement'],[0,0,'Normal']]) {
-    const result = context.decodeUplink({bytes: [1,94,motion,0,battery]});
-    assert.equal(result.data.temperature, 35);
+    const result = context.decodeUplink({bytes: [1,104,motion,0,battery]});
+    assert.equal(result.data.temperature, 36);
     assert.equal(result.data.battery_level, battery);
     assert.equal(result.data.movement, expected);
     assert.equal(result.data.severity, motion ? 'Urgent' : 'Normal');

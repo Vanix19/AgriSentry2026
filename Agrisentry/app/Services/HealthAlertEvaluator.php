@@ -8,17 +8,17 @@ use App\Models\Goat;
 
 class HealthAlertEvaluator
 {
-    private const NORMAL_LOW = 33.0;
-    private const URGENT_LOW = 32.0;
-    private const NORMAL_HIGH = 38.5;
-    private const URGENT_HIGH = 39.5;
+    private const NORMAL_LOW = 35.5;
+    private const URGENT_LOW = 34.5;
+    private const NORMAL_HIGH = 37.2;
+    private const URGENT_HIGH = 38.2;
     private const BATTERY_LOW = 20;
     private const DEDUPE_MINUTES = 30;
 
     /**
      * Single source of truth for goat status bands, per AgriSentry's
-     * skin-surface temperature spec: blue/low < 33.0°C, green/normal
-     * 33.0-38.5°C, red/high > 38.5°C.
+     * skin-surface temperature spec: blue/low < 35.5°C, green/normal
+     * 35.5-37.2°C, red/high > 37.2°C.
      */
     public static function resolveStatus(?float $temperature): array
     {

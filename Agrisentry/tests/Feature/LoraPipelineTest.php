@@ -83,7 +83,7 @@ class LoraPipelineTest extends TestCase
             $this->postJson('/api/lorawan/uplink', [
                 'end_device_ids' => ['device_id' => 'registered'],
                 'uplink_message' => [
-                    'frm_payload' => base64_encode(pack('C*', 1, 94, $motion, 0, $battery)),
+                    'frm_payload' => base64_encode(pack('C*', 1, 104, $motion, 0, $battery)),
                     'decoded_payload' => ['temperature' => 35, 'battery_level' => 66, 'movement' => 'Normal'],
                 ],
             ])->assertCreated()->assertJsonPath('health_log.movement', $label);

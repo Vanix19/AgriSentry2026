@@ -10,12 +10,12 @@ class VetAdvisoryService
 
         $reading = number_format($temperature, 1) . '°C';
         [$label, $steps] = match (true) {
-            $temperature < 32.0 => ['Urgent Low', 'Inspect the goat immediately and contact a veterinarian promptly. Move it out of cold or wet conditions into dry shelter. Check the collar contact and repeat the reading while watching for weakness or difficulty standing.'],
-            $temperature < 33.0 => ['Warning Low', 'Check for wet bedding, drafts, and poor collar contact. Keep the goat in dry shelter and recheck the reading promptly. Watch its appetite and activity; seek veterinary help if the reading falls or the goat appears unwell.'],
-            $temperature < 35.0 => ['Normal', 'This is in the lower part of the configured monitoring range. Check that the collar is seated correctly and the resting area is dry. Compare the next reading for a downward trend and observe appetite and movement.'],
-            $temperature < 37.0 => ['Normal', 'This is in the middle of the configured monitoring range. Continue regular checks of feeding, drinking, and movement. Keep bedding clean and dry, and compare later readings with this goat\'s usual pattern.'],
-            $temperature <= 38.5 => ['Normal', 'This is in the upper part of the configured monitoring range. Check access to shade, drinking water, and ventilation. Watch the next reading for a rise above 38.5°C and check for unusual breathing or reduced activity.'],
-            $temperature <= 39.5 => ['Warning High', 'Move the goat into shade and provide clean drinking water and ventilation. Reduce exertion and check the collar reading again promptly. Watch for unusual breathing or reduced activity; seek veterinary help if the reading rises or symptoms appear.'],
+            $temperature < 34.5 => ['Urgent Low', 'Inspect the goat immediately and contact a veterinarian promptly. Move it out of cold or wet conditions into dry shelter. Check the collar contact and repeat the reading while watching for weakness or difficulty standing.'],
+            $temperature < 35.5 => ['Warning Low', 'Check for wet bedding, drafts, and poor collar contact. Keep the goat in dry shelter and recheck the reading promptly. Watch its appetite and activity; seek veterinary help if the reading falls or the goat appears unwell.'],
+            $temperature < 36.1 => ['Normal', 'This is in the lower part of the configured monitoring range. Check that the collar is seated correctly and the resting area is dry. Compare the next reading for a downward trend and observe appetite and movement.'],
+            $temperature < 36.7 => ['Normal', 'This is in the middle of the configured monitoring range. Continue regular checks of feeding, drinking, and movement. Keep bedding clean and dry, and compare later readings with this goat\'s usual pattern.'],
+            $temperature <= 37.2 => ['Normal', 'This is in the upper part of the configured monitoring range. Check access to shade, drinking water, and ventilation. Watch the next reading for a rise above 37.2°C and check for unusual breathing or reduced activity.'],
+            $temperature <= 38.2 => ['Warning High', 'Move the goat into shade and provide clean drinking water and ventilation. Reduce exertion and check the collar reading again promptly. Watch for unusual breathing or reduced activity; seek veterinary help if the reading rises or symptoms appear.'],
             default => ['Urgent High', 'Inspect the goat immediately and contact a veterinarian promptly. Move it to a shaded, ventilated area and make drinking water available. Verify the collar contact and monitor breathing and ability to stand while arranging help.'],
         };
 
@@ -48,7 +48,7 @@ class VetAdvisoryService
         ][intdiv($tenths, 10) % 10];
 
         if ($label === 'Normal') {
-            $position = $temperature < 35.0 ? 'lower part' : ($temperature < 37.0 ? 'middle' : 'upper part');
+            $position = $temperature < 36.1 ? 'lower part' : ($temperature < 36.7 ? 'middle' : 'upper part');
             $steps = "{$focus} {$followUp} This reading is in the {$position} of the configured monitoring range.";
         } else {
             // Always retain the severity-specific actions, especially urgent escalation.

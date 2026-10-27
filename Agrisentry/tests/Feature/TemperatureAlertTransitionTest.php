@@ -18,14 +18,14 @@ class TemperatureAlertTransitionTest extends TestCase
         $this->mock(SmsGatewayService::class)->shouldReceive('notifyForAlert')->andReturnNull();
         $goat = Goat::create(['name' => 'Test goat', 'code' => 'TRANSITION-1']);
         $evaluator = app(HealthAlertEvaluator::class);
-        foreach ([[31.9, 'Urgent Low'], [32.5, 'Warning Low'], [39.0, 'Warning High'], [40.0, 'Urgent High'], [31.9, 'Urgent Low']] as [$temperature, $label]) {
+        foreach ([[34.4, 'Urgent Low'], [35.0, 'Warning Low'], [37.8, 'Warning High'], [39.0, 'Urgent High'], [34.4, 'Urgent Low']] as [$temperature, $label]) {
             $goat->update(['temperature' => $temperature]);
             $evaluator->evaluate($goat->fresh());
             $active = Alert::where('goat_id', $goat->id)->where('status', 'Active')->get();
             $this->assertCount(1, $active);
             $this->assertStringStartsWith($label, $active->first()->recommendation);
         }
-        $goat->update(['temperature' => 37.0]);
+        $goat->update(['temperature' => 36.4]);
         $evaluator->evaluate($goat->fresh());
         $this->assertSame(0, Alert::where('status', 'Active')->count());
         $this->assertSame(5, Alert::where('status', 'Resolved')->count());

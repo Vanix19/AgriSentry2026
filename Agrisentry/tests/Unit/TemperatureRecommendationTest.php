@@ -11,7 +11,7 @@ class TemperatureRecommendationTest extends TestCase
 {
     public function test_all_five_bands_and_boundaries(): void
     {
-        foreach ([['Urgent Low', 31.9], ['Warning Low', 32.0], ['Warning Low', 32.9], ['Normal', 33.0], ['Normal', 38.5], ['Warning High', 38.6], ['Warning High', 39.5], ['Urgent High', 39.6]] as [$label, $temperature]) {
+        foreach ([['Urgent Low', 34.4], ['Warning Low', 34.5], ['Warning Low', 35.4], ['Normal', 35.5], ['Normal', 37.2], ['Warning High', 37.3], ['Warning High', 38.2], ['Urgent High', 38.3]] as [$label, $temperature]) {
             $this->assertStringStartsWith($label, VetAdvisoryService::temperatureRecommendation($temperature));
         }
         $this->assertNull(VetAdvisoryService::temperatureRecommendation(null));
@@ -19,10 +19,10 @@ class TemperatureRecommendationTest extends TestCase
 
     public function test_active_alert_advice_changes_with_latest_temperature(): void
     {
-        $goat = new Goat(['temperature' => 31.9]);
+        $goat = new Goat(['temperature' => 34.4]);
         $alert = new Alert(['alert_type' => 'Low Temperature', 'status' => 'Active', 'recommendation' => 'Original advice']);
         $alert->setRelation('goat', $goat);
-        foreach ([[31.9, 'Urgent Low'], [32.5, 'Warning Low'], [37.0, 'Normal'], [39.0, 'Warning High'], [40.0, 'Urgent High']] as [$temperature, $label]) {
+        foreach ([[34.4, 'Urgent Low'], [35.0, 'Warning Low'], [36.4, 'Normal'], [37.8, 'Warning High'], [39.0, 'Urgent High']] as [$temperature, $label]) {
             $goat->temperature = $temperature;
             $this->assertStringStartsWith($label, $alert->recommendation);
         }
@@ -36,22 +36,22 @@ class TemperatureRecommendationTest extends TestCase
     public function test_advice_matches_the_card_reading_instead_of_the_latest_goat_reading(): void
     {
         $alert = new Alert(['alert_type' => 'Low Temperature', 'status' => 'Active',
-            'message' => 'Low skin temperature reading: 33.8°C.']);
+            'message' => 'Low skin temperature reading: 35.8°C.']);
         $alert->setRelation('goat', new Goat(['temperature' => 40.0]));
         $this->assertStringStartsWith('Normal', $alert->recommendation);
-        $this->assertStringContainsString('33.8°C', $alert->recommendation);
+        $this->assertStringContainsString('35.8°C', $alert->recommendation);
         $this->assertStringNotContainsString('40.0°C', $alert->recommendation);
     }
 
     public function test_normal_readings_have_specific_guidance_and_multiple_steps(): void
     {
-        foreach ([[33.8, 'lower part'], [36.0, 'middle'], [38.0, 'upper part']] as [$temperature, $phrase]) {
+        foreach ([[35.8, 'lower part'], [36.4, 'middle'], [37.0, 'upper part']] as [$temperature, $phrase]) {
             $advice = VetAdvisoryService::temperatureRecommendation($temperature);
             $this->assertStringContainsString($phrase, $advice);
             $this->assertStringContainsString(number_format($temperature, 1) . '°C', $advice);
             $this->assertGreaterThanOrEqual(3, substr_count($advice, '. '));
         }
-        $this->assertNotSame(VetAdvisoryService::temperatureRecommendation(33.8), VetAdvisoryService::temperatureRecommendation(34.8));
+        $this->assertNotSame(VetAdvisoryService::temperatureRecommendation(35.6), VetAdvisoryService::temperatureRecommendation(35.9));
     }
 
     public function test_individual_readings_have_different_steps_even_without_the_temperature_label(): void

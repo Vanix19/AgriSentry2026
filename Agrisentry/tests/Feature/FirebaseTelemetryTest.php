@@ -33,7 +33,7 @@ class FirebaseTelemetryTest extends TestCase
             public array $sent = [];
             protected function write(string $path, array $data): void { $this->sent = [$path, $data]; }
         };
-        $goat = new Goat(['temperature' => 39.0, 'owner' => 'Private owner', 'status' => 'Warning']);
+        $goat = new Goat(['temperature' => 37.8, 'owner' => 'Private owner', 'status' => 'Warning']);
         $goat->id = 1;
         $collar = new Collar(['battery_level' => 0, 'last_seen' => now()]);
         $collar->id = 2;
@@ -41,7 +41,7 @@ class FirebaseTelemetryTest extends TestCase
         $service->publish($collar);
         $this->assertSame('farms/test-farm/telemetry/2', $service->sent[0]);
         $this->assertSame(0, $service->sent[1]['battery_level']);
-        $this->assertSame(39.0, $service->sent[1]['temperature']);
+        $this->assertSame(37.8, $service->sent[1]['temperature']);
         $this->assertArrayNotHasKey('owner', $service->sent[1]);
         $this->assertStringStartsWith('Warning High', $service->sent[1]['recommendation']);
     }

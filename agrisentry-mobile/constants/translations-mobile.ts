@@ -71,7 +71,7 @@ Choose from photos|Pili gikan sa mga litrato|Pumili mula sa mga larawan|Elegir d
 Ask in your preferred language, or attach a photo for advice.|Pangutana sa imong gustong pinulongan, o ilakip ang litrato para sa tambag.|Magtanong sa gusto mong wika, o maglakip ng larawan para sa payo.|Pregunta en tu idioma preferido o adjunta una foto para recibir consejos.
 JPG, PNG, or WebP up to 2 MB. Add a question if you like, then press Send.|JPG, PNG, o WebP hangtod 2 MB. Pagdugang og pangutana kon gusto, unya pindota ang Ipadala.|JPG, PNG, o WebP hanggang 2 MB. Magdagdag ng tanong kung gusto, saka pindutin ang Ipadala.|JPG, PNG o WebP de hasta 2 MB. Añade una pregunta si quieres y pulsa Enviar.
 View on Web →|Tan-awa sa Web →|Tingnan sa Web →|Ver en la web →
-Temperature: Low below 33.0°C · Normal 33.0–38.5°C · High above 38.5°C|Temperatura: Ubos ubos sa 33.0°C · Normal 33.0–38.5°C · Taas labaw sa 38.5°C|Temperatura: Mababa sa ilalim ng 33.0°C · Normal 33.0–38.5°C · Mataas sa itaas ng 38.5°C|Temperatura: Baja por debajo de 33.0°C · Normal 33.0–38.5°C · Alta por encima de 38.5°C
+Temperature: Low below 35.5°C · Normal 35.5–37.2°C · High above 37.2°C|Temperatura: Ubos ubos sa 35.5°C · Normal 35.5–37.2°C · Taas labaw sa 37.2°C|Temperatura: Mababa sa ilalim ng 35.5°C · Normal 35.5–37.2°C · Mataas sa itaas ng 37.2°C|Temperatura: Baja por debajo de 35.5°C · Normal 35.5–37.2°C · Alta por encima de 37.2°C
 Su|Dom|Lin|Do
 Mo|Lun|Lun|Lu
 Tu|Mar|Mar|Ma

@@ -155,8 +155,8 @@ LED Reference|Giya sa LED|Gabay sa LED|Referencia LED
 Green — Normal|Berde — Normal|Berde — Normal|Verde — Normal
 Red — High Temperature|Pula — Taas nga temperatura|Pula — Mataas na temperatura|Rojo — Temperatura alta
 Blue — Low Temperature|Asul — Ubos nga temperatura|Asul — Mababang temperatura|Azul — Temperatura baja
-> 38.5°C · possible fever / heat stress|> 38.5°C · posibleng hilanat / epekto sa kainit|> 38.5°C · posibleng lagnat / epekto ng init|> 38.5°C · posible fiebre / estrés por calor
-< 33.0°C · possible hypothermia|< 33.0°C · posibleng sobrang kabugnaw sa lawas|< 33.0°C · posibleng sobrang paglamig ng katawan|< 33.0°C · posible hipotermia
+> 37.2°C · possible fever / heat stress|> 37.2°C · posibleng hilanat / epekto sa kainit|> 37.2°C · posibleng lagnat / epekto ng init|> 37.2°C · posible fiebre / estrés por calor
+< 35.5°C · possible hypothermia|< 35.5°C · posibleng sobrang kabugnaw sa lawas|< 35.5°C · posibleng sobrang paglamig ng katawan|< 35.5°C · posible hipotermia
 Register a new animal in the herd|Irehistro ang bag-ong hayop sa panon|Irehistro ang bagong hayop sa kawan|Registrar un nuevo animal
 Name|Ngalan|Pangalan|Nombre
 Breed|Lahi|Lahi|Raza

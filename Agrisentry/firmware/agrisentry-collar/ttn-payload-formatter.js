@@ -22,8 +22,8 @@ function decodeUplink(input) {
     var urgent = motion === 'Prolonged Inactivity' || motion === 'Excessive Movement';
     return {data: {
       temperature: temperature, movement: motion, battery_level: bytes[4],
-      led_status: temperature === null ? null : temperature < 33 ? 'Blue' : temperature > 38.5 ? 'Red' : 'Green',
-      severity: urgent ? 'Urgent' : temperature === null ? null : temperature < 32 || temperature > 39.5 ? 'Urgent' : temperature < 33 || temperature > 38.5 ? 'Warning' : 'Normal'
+      led_status: temperature === null ? null : temperature < 35.5 ? 'Blue' : temperature > 37.2 ? 'Red' : 'Green',
+      severity: urgent ? 'Urgent' : temperature === null ? null : temperature < 34.5 || temperature > 38.2 ? 'Urgent' : temperature < 35.5 || temperature > 37.2 ? 'Warning' : 'Normal'
     }, warnings: [], errors: []};
   }
 

@@ -552,8 +552,8 @@ export default function AgriSentryDashboard() {
               <Text style={styles.subtitle}>
                 Ask in your preferred language, or attach a photo for advice.
               </Text>
-              <Text style={styles.aiDisclaimer}>Temperature: Low below 33.0°C · Normal 33.0–38.5°C · High above 38.5°C</Text>
-              <Text style={styles.aiDisclaimer}>Advisory: Urgent Low below 32.0°C · Warning Low 32.0–32.9°C · Normal 33.0–38.5°C · Warning High 38.6–39.5°C · Urgent High above 39.5°C</Text>
+              <Text style={styles.aiDisclaimer}>Temperature: Low below 35.5°C · Normal 35.5–37.2°C · High above 37.2°C</Text>
+              <Text style={styles.aiDisclaimer}>Advisory: Urgent Low below 34.5°C · Warning Low 34.5–35.4°C · Normal 35.5–37.2°C · Warning High 37.3–38.2°C · Urgent High above 38.2°C</Text>
               <Text style={styles.aiDisclaimer}>
                 AI-generated guidance only — not a medical diagnosis. Gemini may occasionally provide
                 inaccurate information. Always confirm with a licensed veterinarian.

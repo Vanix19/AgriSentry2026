@@ -68,10 +68,10 @@ const uint8_t SubBand = 0; // 0 = default; adjust only if your TTN region plan s
 #define STATUS_LED_BLUE  35
 
 // ============ THRESHOLDS (mirrors App\Services\HealthAlertEvaluator) ============
-const float TEMP_WARNING_HIGH = 38.5;
-const float TEMP_URGENT_HIGH = 39.5;
-const float TEMP_WARNING_LOW  = 33.0;
-const float TEMP_URGENT_LOW  = 32.0;
+const float TEMP_WARNING_HIGH = 37.2;
+const float TEMP_URGENT_HIGH = 38.2;
+const float TEMP_WARNING_LOW  = 35.5;
+const float TEMP_URGENT_LOW  = 34.5;
 
 const unsigned long MOTION_SAMPLE_MS = 200;
 const unsigned long INACTIVITY_LIMIT_MS = 90UL * 60UL * 1000UL;
