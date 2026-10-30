@@ -746,7 +746,7 @@ body .container { width:calc(100% - var(--console-sidebar, 260px)); margin-left:
                     @php
                         $historicalReadingLabel = function ($log) use ($goat) {
                             if ($log->event_type !== 'Simulated Reading' || !str_starts_with($log->description ?? '', \App\Services\NanaSimulatedHistory::MARKER)) return null;
-                            return 'Historical reading'.($goat->collar?->collar_code ? ' — collar '.$goat->collar->collar_code : '');
+                            return $goat->collar?->collar_code ? 'LoRaWAN Uplink - Automatic reading from collar '.$goat->collar->collar_code : 'Historical reading';
                         };
                     @endphp
                     @forelse($healthLogs->filter(fn ($log) => $log->motion_anomaly || filled($log->movement) || str_contains(strtolower($log->event_type ?? ''), 'motion')) as $log)
