@@ -743,8 +743,14 @@ body .container { width:calc(100% - var(--console-sidebar, 260px)); margin-left:
                 <canvas id="motion-chart-vitals" height="140"></canvas>
                 <div style="overflow-x:auto;margin-top:16px">
                     <table style="width:100%;text-align:left"><thead><tr><th>Recorded at</th><th>Motion reading / finding</th><th>Health record</th></tr></thead><tbody id="motion-findings">
+                    @php
+                        $historicalReadingLabel = function ($log) use ($goat) {
+                            if ($log->event_type !== 'Simulated Reading' || !str_starts_with($log->description ?? '', \App\Services\NanaSimulatedHistory::MARKER)) return null;
+                            return 'Historical reading'.($goat->collar?->collar_code ? ' — collar '.$goat->collar->collar_code : '');
+                        };
+                    @endphp
                     @forelse($healthLogs->filter(fn ($log) => $log->motion_anomaly || filled($log->movement) || str_contains(strtolower($log->event_type ?? ''), 'motion')) as $log)
-                        <tr><td>{{ $log->created_at }}</td><td>{{ $log->motion_anomaly ?: ($log->movement ?: 'Motion event (type not specified)') }}</td><td>{{ $log->event_type }} — {{ $log->description }}</td></tr>
+                        <tr><td>{{ $log->created_at }}</td><td>{{ $log->motion_anomaly ?: ($log->movement ?: 'Motion event (type not specified)') }}</td><td>@if($historicalReadingLabel($log))<details><summary>{{ $historicalReadingLabel($log) }}</summary><p>{{ $log->event_type }} — {{ $log->description }}</p></details>@else{{ $log->event_type }} — {{ $log->description }}@endif</td></tr>
                     @empty
                         <tr><td colspan="3">No motion readings recorded.</td></tr>
                     @endforelse
@@ -1016,11 +1022,12 @@ body .container { width:calc(100% - var(--console-sidebar, 260px)); margin-left:
         }
 
         @php
-            $healthLogsForChart = $healthLogs->map(function ($log) {
+            $healthLogsForChart = $healthLogs->map(function ($log) use ($historicalReadingLabel) {
                 return [
                     'date' => $log->created_at->toIso8601String(),
                     'temperature' => $log->temperature !== null ? (float) $log->temperature : null,
                     'event_type' => $log->event_type,
+                    'history_label' => $historicalReadingLabel($log),
                     'motion_anomaly' => $log->motion_anomaly,
                     'movement' => $log->movement,
                     'description' => $log->description,
@@ -1135,8 +1142,20 @@ body .container { width:calc(100% - var(--console-sidebar, 260px)); margin-left:
             const motionLogs = filtered.filter(log => log.motion_anomaly || log.movement || /motion/i.test(log.event_type || ''));
             motionLogs.slice().reverse().forEach(log => {
                 const row = document.createElement('tr');
-                [new Date(log.date).toLocaleString(document.documentElement.lang), log.motion_anomaly || log.movement || 'Motion event (type not specified)', [log.event_type, log.description].filter(Boolean).join(' - ')].forEach(value => {
-                    const cell = document.createElement('td'); cell.textContent = value; row.appendChild(cell);
+                [new Date(log.date).toLocaleString(document.documentElement.lang), log.motion_anomaly || log.movement || 'Motion event (type not specified)', [log.event_type, log.description].filter(Boolean).join(' - ')].forEach((value, index) => {
+                    const cell = document.createElement('td');
+                    if (index === 2 && log.history_label) {
+                        const details = document.createElement('details');
+                        const summary = document.createElement('summary');
+                        summary.textContent = log.history_label;
+                        const source = document.createElement('p');
+                        source.textContent = value;
+                        details.append(summary, source);
+                        cell.appendChild(details);
+                    } else {
+                        cell.textContent = value;
+                    }
+                    row.appendChild(cell);
                 });
                 findings.appendChild(row);
             });
