@@ -25,6 +25,6 @@
 </div></section>
 </div>
 @if($user->isAdmin())
-<section class="panel" id="administration"><div class="panel-head"><h2 class="panel-title">Administration</h2></div><div class="panel-body"><p class="page-sub">Manage accounts, feature access, and user activity.</p><div class="settings-links"><a class="btn" href="/admin/users">Manage users</a><a class="btn" href="/admin/access">Access control &amp; activity logs</a></div></div></section>
+<section class="panel" id="administration"><div class="panel-head"><h2 class="panel-title">Administration</h2></div><div class="panel-body"><p class="page-sub">Manage accounts, feature access, and user activity.</p><div class="settings-links"><a class="btn" href="/admin/users">Manage users</a><a class="btn" href="/admin/access">Access control &amp; activity logs</a><a class="btn" href="/admin/nana-history">NANA simulated history</a></div></div></section>
 @endif
 @endsection

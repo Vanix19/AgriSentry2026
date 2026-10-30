@@ -49,3 +49,7 @@ Route::post('/password/verify', [\App\Http\Controllers\PasswordController::class
 Route::get('/login/otp', [AuthController::class, 'otp'])->middleware('guest');
 Route::post('/login/otp', [AuthController::class, 'verify'])->middleware(['guest', 'throttle:6,1']);
 Route::post('/login/otp/resend', [AuthController::class, 'resend'])->middleware(['guest', 'throttle:3,1']);
+
+// Preview and explicitly import simulated history; requires an Admin web session.
+Route::get('/admin/nana-history', [\App\Http\Controllers\NanaHistoryController::class, 'show'])->middleware(['auth', 'role:Admin', 'throttle:20,1']);
+Route::post('/admin/nana-history', [\App\Http\Controllers\NanaHistoryController::class, 'store'])->middleware(['auth', 'role:Admin', 'throttle:3,1']);
