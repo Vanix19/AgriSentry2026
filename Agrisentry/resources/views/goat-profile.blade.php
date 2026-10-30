@@ -750,7 +750,7 @@ body .container { width:calc(100% - var(--console-sidebar, 260px)); margin-left:
                         };
                     @endphp
                     @forelse($healthLogs->filter(fn ($log) => $log->motion_anomaly || filled($log->movement) || str_contains(strtolower($log->event_type ?? ''), 'motion')) as $log)
-                        <tr><td>{{ $log->created_at }}</td><td>{{ $log->motion_anomaly ?: ($log->movement ?: 'Motion event (type not specified)') }}</td><td>@if($historicalReadingLabel($log))<details><summary>{{ $historicalReadingLabel($log) }}</summary><p>{{ $log->event_type }} — {{ $log->description }}</p></details>@else{{ $log->event_type }} — {{ $log->description }}@endif</td></tr>
+                        <tr><td>{{ $log->created_at }}</td><td>{{ $log->motion_anomaly ?: ($log->movement ?: 'Motion event (type not specified)') }}</td><td>@if($historicalReadingLabel($log))<span title="{{ $log->event_type }} — {{ $log->description }}">{{ $historicalReadingLabel($log) }}</span>@else{{ $log->event_type }} — {{ $log->description }}@endif</td></tr>
                     @empty
                         <tr><td colspan="3">No motion readings recorded.</td></tr>
                     @endforelse
@@ -1145,13 +1145,8 @@ body .container { width:calc(100% - var(--console-sidebar, 260px)); margin-left:
                 [new Date(log.date).toLocaleString(document.documentElement.lang), log.motion_anomaly || log.movement || 'Motion event (type not specified)', [log.event_type, log.description].filter(Boolean).join(' - ')].forEach((value, index) => {
                     const cell = document.createElement('td');
                     if (index === 2 && log.history_label) {
-                        const details = document.createElement('details');
-                        const summary = document.createElement('summary');
-                        summary.textContent = log.history_label;
-                        const source = document.createElement('p');
-                        source.textContent = value;
-                        details.append(summary, source);
-                        cell.appendChild(details);
+                        cell.textContent = log.history_label;
+                        cell.title = value;
                     } else {
                         cell.textContent = value;
                     }

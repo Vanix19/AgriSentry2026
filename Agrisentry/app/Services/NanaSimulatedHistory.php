@@ -38,7 +38,7 @@ class NanaSimulatedHistory
             }
             $movement = $minute >= 360 && $minute < 1080 ? 'Active' : 'Normal';
             if ($time->format('d') === '28' && $minute < 90) {
-                $movement = 'Low Movement';
+                $movement = 'Normal';
             } elseif ($time->format('d') === '28' && $minute === 90) {
                 $movement = 'Prolonged Inactivity';
             } elseif (in_array($minute, [420, 540, 660], true)) {

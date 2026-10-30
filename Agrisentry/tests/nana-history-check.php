@@ -41,7 +41,7 @@ $check(array_values($counts) === [720, 720, 720, 450], 'Daily caps or cutoff inc
 $check(array_values($events) === [3, 3, 3, 3], 'Must have three morning events daily');
 $inactive = array_values(array_filter($rows, fn ($row) => $row['movement'] === 'Prolonged Inactivity'));
 $check(count($inactive) === 1 && $inactive[0]['created_at'] === '2026-10-27 17:30:00', 'Inactivity must be October 28 at 01:30 local');
-$check(count(array_filter(array_slice($rows, 0, 45), fn ($row) => $row['movement'] === 'Low Movement')) === 45, 'Need 90 minutes preceding inactivity');
+$check(count(array_filter(array_slice($rows, 0, 45), fn ($row) => $row['movement'] === 'Normal')) === 45, 'Need Normal readings preceding inactivity');
 $check($rows[0]['created_at'] === '2026-10-27 16:00:00', 'Wrong UTC start');
 $check(end($rows)['created_at'] === '2026-10-31 06:58:00', 'Wrong UTC cutoff');
 $check($generator->rows(8, 2025, 'UTC')[0]['created_at'] === '2025-10-28 00:00:00', 'Options not respected');
