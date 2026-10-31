@@ -750,7 +750,7 @@ body .container { width:calc(100% - var(--console-sidebar, 260px)); margin-left:
                         };
                     @endphp
                     @forelse($healthLogs->filter(fn ($log) => $log->motion_anomaly || filled($log->movement) || str_contains(strtolower($log->event_type ?? ''), 'motion')) as $log)
-                        <tr><td>{{ $log->created_at }}</td><td>{{ $log->motion_anomaly ?: ($log->movement ?: 'Motion event (type not specified)') }}</td><td>@if($historicalReadingLabel($log))<span title="{{ $log->event_type }} — {{ $log->description }}">{{ $historicalReadingLabel($log) }}</span>@else{{ $log->event_type }} — {{ $log->description }}@endif</td></tr>
+                        <tr><td>{{ $log->created_at }}</td><td>{{ $log->motion_anomaly ?: ($log->movement ?: 'Motion event (type not specified)') }}</td><td>@if($historicalReadingLabel($log))<span>{{ $historicalReadingLabel($log) }}</span>@else{{ $log->event_type }} — {{ $log->description }}@endif</td></tr>
                     @empty
                         <tr><td colspan="3">No motion readings recorded.</td></tr>
                     @endforelse
@@ -1146,7 +1146,6 @@ body .container { width:calc(100% - var(--console-sidebar, 260px)); margin-left:
                     const cell = document.createElement('td');
                     if (index === 2 && log.history_label) {
                         cell.textContent = log.history_label;
-                        cell.title = value;
                     } else {
                         cell.textContent = value;
                     }
