@@ -44,6 +44,16 @@ class NanaSimulatedHistory
             } elseif (in_array($minute, [420, 540, 660], true)) {
                 $movement = 'Excessive Movement';
             }
+            // Exact requested daily movement totals for the generated baseline.
+            $day = $time->format('d');
+            if ($day === '28' || $day === '29') {
+                $activeTarget = $day === '28' ? 398 : 354;
+                $excessiveMinutes = $day === '28' ? [420, 540] : [420, 480, 540, 660];
+                $activeEnd = 360 + 2 * ($activeTarget + count($excessiveMinutes));
+                $movement = $minute >= 360 && $minute < $activeEnd ? 'Active' : 'Normal';
+                if ($day === '28' && $minute === 90) $movement = 'Prolonged Inactivity';
+                if (in_array($minute, $excessiveMinutes, true)) $movement = 'Excessive Movement';
+            }
             $motionAlert = in_array($movement, ['Prolonged Inactivity', 'Excessive Movement'], true);
             $normal = $temperature >= 35.5 && $temperature <= 37.2;
             $stamp = $time->setTimezone($utc)->format('Y-m-d H:i:s');
@@ -60,3 +70,4 @@ class NanaSimulatedHistory
         return $rows;
     }
 }
+

@@ -9,7 +9,7 @@
 <tr><td>{{ $date }}</td><td>{{ $day['existing'] }}</td><td>{{ $day['adding'] }}</td><td>{{ $day['existing'] + $day['adding'] }}</td><td>{{ $day['limit'] }}</td></tr>
 @endforeach
 </tbody></table></div>
-<p>Normal simulated temperatures are 35.5–37.2°C, with low spikes near 2 AM and high spikes near noon. Motion includes Prolonged Inactivity on October 28 and Excessive Movement at 7, 9, and 11 AM each day where space is available.</p>
+<p>Normal simulated temperatures are 35.5–37.2°C, with low spikes near 2 AM and high spikes near noon. Motion includes Prolonged Inactivity on October 28 and Excessive Movement twice on October 28 (7 and 9 AM), four times on October 29 (7, 8, 9, and 11 AM), and three times on October 30–31 where space is available. The generated baseline has 398 Active readings on October 28 and 354 on October 29.</p>
 <p>Existing readings occupy their two-minute slots and count toward the daily target. Days already above the target are left unchanged. Records after the October 31 cutoff are also preserved. Pause NANA’s live collar ingestion during import so new readings do not change the preview.</p>
 @if($plan['skipped_motion'])<p class="message">{{ $plan['skipped_motion'] }} scheduled simulated motion events cannot be added because their slots are occupied or the day is full. Previously imported events also count here. Existing readings will not be overwritten.</p>@endif
 @if(count($plan['rows']))
