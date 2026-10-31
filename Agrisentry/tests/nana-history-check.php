@@ -33,12 +33,12 @@ foreach ($rows as $row) {
         $check($temp >= 35.5 && $temp <= 37.2 && $row['led_status'] === 'Green', 'Normal temperature outside band');
     }
     if ($row['movement'] === 'Excessive Movement') {
-        $check(in_array($minute, [420, 540, 660], true), 'Excessive movement outside morning schedule');
+        $check(in_array($minute, [420, 480, 540, 660], true), 'Excessive movement outside morning schedule');
         $events[$date] = ($events[$date] ?? 0) + 1;
     }
 }
 $check(array_values($counts) === [720, 720, 720, 450], 'Daily caps or cutoff incorrect');
-$check(array_values($events) === [3, 3, 3, 3], 'Must have three morning events daily');
+$check(array_values($events) === [2, 4, 3, 3], 'Must match requested daily morning events');
 $inactive = array_values(array_filter($rows, fn ($row) => $row['movement'] === 'Prolonged Inactivity'));
 $check(count($inactive) === 1 && $inactive[0]['created_at'] === '2026-10-27 17:30:00', 'Inactivity must be October 28 at 01:30 local');
 $check(count(array_filter(array_slice($rows, 0, 45), fn ($row) => $row['movement'] === 'Normal')) === 45, 'Need Normal readings preceding inactivity');
@@ -51,3 +51,4 @@ try {
 } catch (InvalidArgumentException) {
 }
 echo "PASS: 2610 rows; daily caps, intervals, UTC conversion, cutoff, labels, temperature bands and motion events.\n";
+
