@@ -1210,35 +1210,56 @@ body .container { width:calc(100% - var(--console-sidebar, 260px)); margin-left:
 
             const buckets = selectedDate ? [{key: selectedDate, label: selectedDate}] : buildPeriodBuckets(currentPeriod);
             const bucketLabels = buckets.map(b => b.label);
-            const anomalyCounts = buckets.map(b =>
-                filtered.filter(log => (selectedDate || bucketKeyForLog(log.date, currentPeriod) === b.key) && isAnomalyLog(log)).length
-            );
-
-            const otherMotionCounts = buckets.map(b => filtered.filter(log => (selectedDate || bucketKeyForLog(log.date, currentPeriod) === b.key) && !isAnomalyLog(log) && (log.movement || /motion/i.test(log.event_type || ''))).length);
+            const motionSeries = [
+                { movement: 'Normal', color: '#16a34a' },
+                { movement: 'Active', color: '#2563eb' },
+                { movement: 'Prolonged Inactivity', color: '#d97706' },
+                { movement: 'Excessive Movement', color: '#dc2626' },
+            ];
+            const motionDatasets = motionSeries.map(series => ({
+                label: dashboardText(series.movement),
+                data: buckets.map(b => filtered.filter(log =>
+                    (selectedDate || bucketKeyForLog(log.date, currentPeriod) === b.key)
+                    && motionCategory(log) === series.movement
+                ).length),
+                backgroundColor: series.color,
+            }));
             if (!motionChartVitals) {
                 motionChartVitals = new Chart(document.getElementById('motion-chart-vitals').getContext('2d'), {
                     type: 'bar',
-                    data: {
-                        labels: bucketLabels,
-                        datasets: [{ label: dashboardText('Specific motion anomalies'), data: anomalyCounts, backgroundColor: '#dc2626' }, { label: dashboardText('Other motion readings'), data: otherMotionCounts, backgroundColor: '#16a34a' }],
-                    },
+                    data: { labels: bucketLabels, datasets: motionDatasets },
                     options: {
                         responsive: true,
                         plugins: { legend: { display: true } },
-                        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                        scales: {
+                            x: { stacked: false },
+                            y: { stacked: false, beginAtZero: true, ticks: { stepSize: 1 } },
+                        },
                     },
                 });
             } else {
                 motionChartVitals.data.labels = bucketLabels;
-                motionChartVitals.data.datasets[0].data = anomalyCounts;
-                motionChartVitals.data.datasets[1].data = otherMotionCounts;
+                motionChartVitals.data.datasets = motionDatasets;
                 motionChartVitals.update();
             }
 
             if (tempChartVitals) { tempChartVitals.data.datasets[0].label = dashboardText('Temperature') + ' (°C)'; tempChartVitals.update('none'); }
-            if (motionChartVitals) { motionChartVitals.data.datasets[0].label = dashboardText('Specific motion anomalies'); motionChartVitals.data.datasets[1].label = dashboardText('Other motion readings'); motionChartVitals.update('none'); }
             document.querySelectorAll('.period-label').forEach(el => { el.textContent = PERIOD_LABELS[currentPeriod]; });
             updateProfileChartTheme();
+        }
+
+        function motionCategory(log) {
+            // An explicit finding takes precedence over an ordinary movement reading.
+            const anomaly = String(log.motion_anomaly || '').trim().toLowerCase();
+            const movement = String(log.movement || '').trim().toLowerCase();
+            const categories = {
+                normal: 'Normal',
+                active: 'Active',
+                'prolonged inactivity': 'Prolonged Inactivity',
+                'excessive movement': 'Excessive Movement',
+            };
+            if (anomaly === 'prolonged inactivity' || anomaly === 'excessive movement') return categories[anomaly];
+            return categories[movement] || null;
         }
 
         function filterByTime(period) {
